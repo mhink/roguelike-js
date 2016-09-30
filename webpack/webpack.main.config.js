@@ -46,6 +46,9 @@ module.exports = {
     __filename: false,
   },
   devtool: (process.env.NODE_ENV === 'production' ? null : 'source-map'),
+  externals: {
+    '7zip': 'commonjs 7zip'
+  },
   plugins: [
     new webpack.DefinePlugin({
       'process.env': {

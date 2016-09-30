@@ -1,0 +1,12 @@
+:global * {
+  box-sizing: border-box;
+}
+
+:global body {
+  margin: 0;
+}
+
+:global .appMain {
+  margin: 1rem auto;
+  width: 960px;
+}

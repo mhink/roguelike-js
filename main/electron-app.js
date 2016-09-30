@@ -1,18 +1,16 @@
 import { BrowserWindow } from 'electron';
-
-const indexUrl = () => {
-  if(__DEV__) {
-    return process.env.INDEX_URL;
-  } else {
-    return `file://${__dirname}/index.html`;
-  }
-};
+import installDevTools from 'install-dev-tools';
+import resolveIndexUrl from 'resolve-index-url';
 
 export default class ElectronApp {
   constructor(app) {
     console.log("Starting ElectronApp...");
     this.app = app;
     this.mainWindow = null;
+
+    if(__DEV__) {
+      this.app.on('ready', installDevTools);
+    }
 
     this.app.on('ready', () => this.openWindow());
     this.app.on('activate', () => this.openWindow());
@@ -32,15 +30,18 @@ export default class ElectronApp {
   openWindow () {
     if(this.mainWindow === null) {
       this.mainWindow = new BrowserWindow({
-        width: 1600,
-        height: 768
+        width:  600,
+        height: 600,
+        resizable: false,
       });
 
-      this.mainWindow.loadURL(indexUrl());
+      this.mainWindow.loadURL(resolveIndexUrl());
+
       if(__DEV__) {
         this.mainWindow.webContents.openDevTools();
       }
-      this.mainWindow.on('closed', ::this.onMainWindowClosed);
+
+      this.mainWindow.on('closed', () => this.onMainWindowClosed());
     }
   }
 }
