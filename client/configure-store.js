@@ -13,8 +13,8 @@ export default function configureStore(initialState = {}) {
   ];
 
   const enhancers = [
+    reduxDevtools(),
     applyMiddleware(...middlewares),
-    reduxDevtools()
   ];
 
   const store = createStore(

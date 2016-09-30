@@ -33,6 +33,7 @@ export default class ElectronApp {
         width:  600,
         height: 600,
         resizable: false,
+        useContentSize: true,
       });
 
       this.mainWindow.loadURL(resolveIndexUrl());

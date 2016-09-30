@@ -9,9 +9,16 @@ require("./layout.css");
 
 const store = configureStore();
 
-render(
-  <Provider store={store}>
-    <App />
-  </Provider>,
-  document.getElementById("app")
-);
+document.addEventListener('DOMContentLoaded', () => {
+  const canvas = document.createElement("canvas");
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+
+  document.body.appendChild(canvas);
+});
+
+document.addEventListener('keydown', () => {
+  store.dispatch({
+    type: "SAY_HELLO"
+  });
+});
