@@ -1,8 +1,9 @@
 import { createStore, applyMiddleware, compose } from "redux";
+import createSagaMiddleware from "redux-saga";
 
+import rootReducer from './root-reducer';
+import rootSaga from './root-saga';
 
-import createSagaMiddleware, { takeEvery } from "redux-saga";
-import { fork, call, put } from "redux-saga/effects";
 const reduxDevtools = window.devToolsExtension || (() => (noop) => noop);
 
 export default function configureStore(initialState = {}) {
@@ -13,8 +14,8 @@ export default function configureStore(initialState = {}) {
   ];
 
   const enhancers = [
-    reduxDevtools(),
     applyMiddleware(...middlewares),
+    reduxDevtools(),
   ];
 
   const store = createStore(
@@ -25,26 +26,5 @@ export default function configureStore(initialState = {}) {
 
   sagaMiddleware.run(rootSaga);
 
-  return store;
+  return [store, sagaMiddleware];
 };
-
-const rootReducer = (state, action) => {
-  switch(action.type) {
-    default:
-      return state;
-  }
-};
-
-function *rootSaga() {
-  yield [
-    fork(helloSagas),
-  ];
-}
-
-function *helloSagas() {
-  yield fork(takeEvery, "SAY_HELLO", sayHello);
-}
-
-function *sayHello(action) {
-  console.log("Hello, world!");
-}
