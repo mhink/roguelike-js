@@ -1,5 +1,13 @@
-import { takeEvery } from "redux-saga";
-import { fork, call, put } from "redux-saga/effects";
+import { fork } from "redux-saga/effects";
+import debugSaga from "features/debug/sagas";
 
-export default function *handleInput(keyboardEvent) {
+function *helloRootSaga() {
+  console.log("Hello, root saga!");
+}
+
+export default function *rootSaga() {
+  yield [
+    fork(helloRootSaga),
+    fork(debugSaga)
+  ];
 }

@@ -3,11 +3,14 @@ import createSagaMiddleware from "redux-saga";
 
 import rootReducer from './root-reducer';
 import rootSaga from './root-saga';
+import sagaMonitor from './util/saga-monitor';
 
 const reduxDevtools = window.devToolsExtension || (() => (noop) => noop);
 
 export default function configureStore(initialState = {}) {
-  const sagaMiddleware = createSagaMiddleware();
+  const sagaMiddleware = createSagaMiddleware({
+    sagaMonitor
+  });
 
   const middlewares = [
     sagaMiddleware
