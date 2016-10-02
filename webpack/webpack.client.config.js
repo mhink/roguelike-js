@@ -32,6 +32,9 @@ module.exports = {
     extensions: ['', '.js'],
     modulesDirectories: ['', 'node_modules']
   },
+  resolveLoader: {
+    modulesDirectories: ['loader_modules', 'node_modules']
+  },
   module: {
     loaders: [
       {
@@ -56,6 +59,14 @@ module.exports = {
       {
         test: /\.json$/,
         loader: 'json'
+      },
+      {
+        test: /\.png$/,
+        loader: 'file'
+      },
+      {
+        test: /\.map$/,
+        loaders: ['json', 'tile']
       }
     ]
   },

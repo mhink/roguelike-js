@@ -30,8 +30,8 @@ export default class ElectronApp {
   openWindow () {
     if(this.mainWindow === null) {
       this.mainWindow = new BrowserWindow({
-        width:  600,
-        height: 600,
+        width: 512, // 32 tiles
+        height: 512, // 32 tiles
         resizable: false,
         useContentSize: true,
       });

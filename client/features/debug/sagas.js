@@ -47,8 +47,13 @@ function *logIpcResponse(action) {
   yield call([console, console.log], action);
 }
 
+function *helloDebugSaga() {
+  console.log("Hello, debug!");
+}
+
 export default function *debugSaga(event) {
   yield [
+    call(helloDebugSaga),
     actionToIpc("IPC_REQUEST"),
     ipcToAction("IPC_RESPONSE"),
 
