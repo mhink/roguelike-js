@@ -2,12 +2,12 @@ import { createStore, applyMiddleware, compose } from "redux";
 import createSagaMiddleware from "redux-saga";
 
 import rootReducer from './root-reducer';
-import rootSaga from './root-saga';
+import rootSaga from './sagas';
 import sagaMonitor from './util/saga-monitor';
 
 const reduxDevtools = window.devToolsExtension || (() => (noop) => noop);
 
-export default function configureStore(initialState = {}) {
+export default function configureStore(initialState = {}, canvas) {
   const sagaMiddleware = createSagaMiddleware({
     sagaMonitor
   });
@@ -27,7 +27,7 @@ export default function configureStore(initialState = {}) {
     compose(...enhancers)
   );
 
-  sagaMiddleware.run(rootSaga);
+  sagaMiddleware.run(rootSaga, canvas);
 
-  return [store, sagaMiddleware];
+  return store;
 };

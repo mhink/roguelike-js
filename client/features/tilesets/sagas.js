@@ -17,9 +17,8 @@ const loadTileset = (path) => (
   })
 );
 
-function *loadInitial() {
-  console.log("Starting initial load...");
-  const images = yield select((state) => state.tilesets.images);
+export function *initTilesets() {
+  const images = yield select(state => state.tilesets.images);
 
   const loadedImages = yield map(images, (image, path) => (
     call(loadTileset, path)
@@ -29,10 +28,4 @@ function *loadInitial() {
     type: "LOADED_IMAGES",
     payload: { loadedImages },
   });
-}
-
-export default function *tilesetsSaga(event) {
-  yield [
-    call(loadInitial),
-  ]
 }
