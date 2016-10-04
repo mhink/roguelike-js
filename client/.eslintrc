@@ -1,0 +1,22 @@
+{
+  "parser": "babel-eslint",
+  "extends": [
+    "formidable/configurations/es6-browser"
+  ],
+  "plugins": [
+    "redux-saga"
+  ],
+  "settings": {
+    "import/resolver": {
+      "webpack": {
+        "config": "webpack/webpack.client.config.js"
+      }
+    }
+  },
+  "rules": {
+    "no-multi-spaces": 0,
+    "generator-star-spacing": ["error", { "before": false, "after": true }],
+    "no-constant-condition": 0,
+    "indent": ["error", 2, { "SwitchCase": 1 }]
+  }
+}

@@ -4,27 +4,27 @@ import { take, put, fork, call } from "redux-saga/effects";
 import { initTilesets } from "features/tilesets/sagas";
 import { watchKeyboard } from "features/input/sagas";
 
-function *debugSystem(prefix, inputSource) {
-  while(true) {
+const debugSystem = function* (prefix, inputSource) {
+  while (true) {
     const value = yield take(inputSource);
-    console.log(`[${prefix}]`, value);
+    console.log(`[${prefix}]`, value); // eslint-disable-line no-console
   }
-}
+};
 
-export default function *rootSaga() {
+export default function* rootSaga() {
   yield call(initTilesets);
 
   const inputSource = yield call(channel);
   const debugSink = yield call(channel);
 
   yield fork(function* () {
-    while(true) {
+    while (true) {
       yield put(debugSink, yield take(inputSource));
     }
   });
 
   yield [
     fork(watchKeyboard, inputSource),
-    fork(debugSystem, "DEBUG", debugSink),
+    fork(debugSystem, "DEBUG", debugSink)
   ];
 }

@@ -4,5 +4,5 @@ import tilesets from "features/tilesets/reducer";
 
 export default combineReducers({
   input,
-  tilesets,
+  tilesets
 });

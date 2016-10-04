@@ -1,14 +1,14 @@
-import { ipcRenderer } from 'electron';
-import { takeEvery, eventChannel, END } from 'redux-saga';
-import { put, fork, call, take, cancelled } from 'redux-saga/effects';
+import { ipcRenderer } from "electron";
+import { takeEvery, eventChannel } from "redux-saga";
+import { put, call, take, cancelled } from "redux-saga/effects";
 
 const subscribeToIpc = (emitter) => {
   const debugListener = (event, ...args) => {
     emitter({
-      event, 
+      event,
       payload: args
     });
-  }
+  };
 
   ipcRenderer.on("debug", debugListener);
 
@@ -17,14 +17,14 @@ const subscribeToIpc = (emitter) => {
   };
 };
 
-function *actionToIpc(pattern) {
-  while(true) {
-    const { type, ...payload } = yield take(pattern);
-    yield call([ipcRenderer, ipcRenderer.send], "debug", payload);
+const actionToIpc = function* (pattern) {
+  while (true) {
+    const action = yield take(pattern);
+    yield call([ipcRenderer, ipcRenderer.send], "debug", action);
   }
-}
+};
 
-function *ipcToAction(actionType) {
+const ipcToAction = function* (actionType) {
   const channel = yield eventChannel(subscribeToIpc);
 
   try {
@@ -33,31 +33,31 @@ function *ipcToAction(actionType) {
       yield put({ type: actionType, payload });
     }
   } finally {
-    if(yield cancelled()) {
+    if (yield cancelled()) {
       channel.close();
     }
   }
-}
+};
 
-function *sendIpc(action) {
+const sendIpc = function* (action) {
   yield put({ type: "IPC_REQUEST", payload: action });
-}
+};
 
-function *logIpcResponse(action) {
-  yield call([console, console.log], action);
-}
+const logIpcResponse = function* (action) {
+  yield call([console, console.log], action); // eslint-disable-line no-console
+};
 
-function *helloDebugSaga() {
-  console.log("Hello, debug!");
-}
+const helloDebugSaga = function* () {
+  yield call([console, console.log], "Hello, debug!"); // eslint-disable-line no-console
+};
 
-export default function *debugSaga(event) {
+export default function* debugSaga() {
   yield [
     call(helloDebugSaga),
     actionToIpc("IPC_REQUEST"),
     ipcToAction("IPC_RESPONSE"),
 
     takeEvery("PLAYER_MOVE", sendIpc),
-    takeEvery("IPC_RESPONSE", logIpcResponse),
+    takeEvery("IPC_RESPONSE", logIpcResponse)
   ];
 }
