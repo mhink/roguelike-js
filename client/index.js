@@ -1,7 +1,5 @@
 import configureStore from "store";
 
-window.tileMap = require("res/test.map");
-
 require("siimple");
 require("./layout.css");
 
@@ -11,5 +9,8 @@ document.addEventListener("DOMContentLoaded", () => {
   canvas.height = window.innerHeight;
   document.body.appendChild(canvas);
 
-  window.$$store = configureStore({}, canvas);
+  const context2d = canvas.getContext('2d');
+  context2d.imageSmoothingEnabled = false;
+
+  window.$$store = configureStore({}, context2d);
 });
