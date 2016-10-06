@@ -1,6 +1,7 @@
 import { BrowserWindow } from 'electron';
 import installDevTools from 'install-dev-tools';
 import resolveIndexUrl from 'resolve-index-url';
+import ApplicationMenu from 'application-menu';
 
 export default class ElectronApp {
   constructor(app) {
@@ -11,6 +12,11 @@ export default class ElectronApp {
     if(__DEV__) {
       this.app.on('ready', installDevTools);
     }
+
+    this.menu = new ApplicationMenu(app);
+    this.menu.on('load-tileset', () => this.loadTileset());
+    this.menu.on('load-tilemap', () => this.loadTilemap());
+    this.menu.on('toggle-devtools', () => this.toggleDevtools());
 
     this.app.on('ready', () => this.openWindow());
     this.app.on('activate', () => this.openWindow());
@@ -44,5 +50,13 @@ export default class ElectronApp {
 
       this.mainWindow.on('closed', () => this.onMainWindowClosed());
     }
+  }
+
+  loadTileset() {
+    console.log("Loading tileset...");
+  }
+  loadTilemap() {
+  }
+  toggleDevtools() {
   }
 }

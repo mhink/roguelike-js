@@ -3,7 +3,7 @@ import { take, put, fork, call } from "redux-saga/effects";
 
 import { initTilesets } from "features/tilesets/sagas";
 import { watchKeyboard } from "features/input/sagas";
-import { displaySystem } from "features/display/sagas";
+import { renderingSystem } from "features/rendering/sagas";
 
 const debugSystem = function* (prefix, inputSource) {
   while (true) {
@@ -17,21 +17,21 @@ export default function* rootSaga(context2d) {
 
   const inputSource = yield call(channel);
   const debugSink = yield call(channel);
-  const displaySink = yield call(channel);
+  const renderingSink = yield call(channel);
 
   yield [
     fork(watchKeyboard, inputSource),
     fork(debugSystem, "DEBUG", debugSink),
-    fork(displaySystem, context2d, displaySink)
+    fork(renderingSystem, context2d, renderingSink)
   ];
 
-  yield put(displaySink, "@@INIT");
+  yield put(renderingSink, "@@INIT");
 
   yield fork(function* () {
     while (true) {
       const input = yield take(inputSource);
       yield put(debugSink, input);
-      yield put(displaySink, input);
+      yield put(renderingSink, input);
     }
   });
 }

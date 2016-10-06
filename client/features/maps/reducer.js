@@ -2,7 +2,10 @@ import testMap from "res/test.map";
 
 const initialState = {
   layers: [
-    testMap
+    testMap,
+    [
+      ["player"],
+    ]
   ],
 };
 
