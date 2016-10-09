@@ -1,4 +1,4 @@
-export const shouldRender = (state) => state.tilesets.render;
+export const shouldRender = (state) => state.tilesets.ready;
 export const getTileByName = (state, name) => state.tilesets.tiles[name];
 export const getImageByPath = (state, path) => state.tilesets.images[path];
 
@@ -6,8 +6,8 @@ export const getTileParams = (state, dx0, dy0, name) => {
   const tile  = getTileByName(state, name);
   const image = getImageByPath(state, tile.image);
 
-  const { x: sx0, y: sy0} = tile.coords;
-  const { x: sWidth, y: sHeight } = image.tileSize;
+  const { sx0, sy0 } = tile;
+  const { sWidth, sHeight } = image;
   const sx      = sx0 * sWidth;
   const sy      = sy0 * sHeight;
 
