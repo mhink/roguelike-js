@@ -1,3 +1,4 @@
+import { v4 as uuid } from "uuid";
 import { channel } from "redux-saga";
 import { take, put, fork, call } from "redux-saga/effects";
 
@@ -14,13 +15,21 @@ export default function* rootSaga(context2d) {
     fork(renderingSystem, context2d, renderingSink)
   ];
 
+  yield put({ type: "SPAWN_ENTITY", payload: {
+    uuid: uuid(),
+    player: true,
+    position: { x: 1, y: 1 },
+    tileName: "player",
+  }});
+
   yield call(initTilesets);
   yield put(renderingSink, "@@INIT");
 
   yield fork(function* () {
     while (true) {
-      const input = yield take(inputSource);
-      yield put(renderingSink, input);
+      const command = yield take(inputSource);
+      yield put(command);
+      yield put(renderingSink, command);
     }
   });
 }

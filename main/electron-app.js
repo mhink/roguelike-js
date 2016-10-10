@@ -40,6 +40,7 @@ export default class ElectronApp {
         height: 512, // 32 tiles
         resizable: false,
         useContentSize: true,
+        scrollBounce: false,
       });
 
       this.mainWindow.loadURL(resolveIndexUrl());
