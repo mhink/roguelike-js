@@ -2,6 +2,7 @@ import { BrowserWindow } from 'electron';
 import installDevTools from 'install-dev-tools';
 import resolveIndexUrl from 'resolve-index-url';
 import ApplicationMenu from 'application-menu';
+import leftmostBounds from 'leftmost-bounds';
 
 export default class ElectronApp {
   constructor(app) {
@@ -36,8 +37,9 @@ export default class ElectronApp {
   openWindow () {
     if(this.mainWindow === null) {
       this.mainWindow = new BrowserWindow({
-        width: 512, // 32 tiles
-        height: 512, // 32 tiles
+        ...leftmostBounds(),
+        width: 576, // 32 tiles
+        height: 576, // 32 tiles
         resizable: false,
         useContentSize: true,
         scrollBounce: false,
