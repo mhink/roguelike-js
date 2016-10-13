@@ -18,6 +18,8 @@ const MOVE_SOUTHEAST = { type: "MOVE_PLAYER", payload: { dx: +1, dy: +1 }};
 
 const setMoveMode = (moveMode) => ({ type: "SET_MOVE_MODE", payload: { moveMode }});
 
+const QUIT_GAME = { type: "IPC_REQUEST", payload: { command: "QUIT" } };
+
 export const actionForKeySelector = (state, key) => {
   switch(state.input.moveMode) {
     case "camera": {
@@ -34,6 +36,7 @@ const initialState = {
   moveMode: "player",
   playerModeKeymap: {
     "KeyA": setMoveMode("camera"),
+    "KeyQ": QUIT_GAME,
     "KeyH": MOVE_WEST,
     "KeyJ": MOVE_SOUTH,
     "KeyK": MOVE_NORTH,

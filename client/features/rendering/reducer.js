@@ -1,4 +1,5 @@
 const initialState = {
+  message: null,
   screenSize: {
     x: 9,
     y: 9
@@ -9,10 +10,18 @@ const initialState = {
   }
 }
 
+export const getMessage = (state) => state.rendering.message;
 export const getOffset = (state) => state.rendering.offset;
 
 export default (state = initialState, action) => {
   switch(action.type) {
+    case "SET_MOVE_MODE": {
+      const { moveMode } = action.payload;
+      return {
+        ...state,
+        message: `Move mode set to ${moveMode}`
+      };
+    }
     case "RESET_OFFSET": {
       const { x: x0, y: y0 } = action.payload;
       const { x: sx, y: sy } = state.screenSize;
@@ -33,6 +42,7 @@ export default (state = initialState, action) => {
       const { x: x0, y: y0 } = state.offset;
       return {
         ...state,
+        message: null,
         offset: {
           x: x0 + dx,
           y: y0 + dy,

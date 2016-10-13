@@ -1,10 +1,14 @@
 import { v4 as uuid } from "uuid";
-import { channel } from "redux-saga";
+import { takeEvery, channel } from "redux-saga";
 import { take, put, fork, call } from "redux-saga/effects";
 
 import { watchKeyboard } from "features/input/sagas";
 import { renderingSystem, resetCameraSystem } from "features/rendering/sagas";
 import { initTilesets, tilesetLoader } from "features/tilesets/sagas";
+import {
+  actionToIpc,
+  ipcToAction,
+} from "features/ipc/sagas";
 
 export default function* rootSaga(context2d) {
   const inputSource = yield call(channel);
@@ -13,7 +17,9 @@ export default function* rootSaga(context2d) {
   yield [
     fork(watchKeyboard, inputSource),
     fork(renderingSystem, context2d, renderingSink),
-    fork(resetCameraSystem)
+    fork(resetCameraSystem),
+    fork(takeEvery, "IPC_REQUEST", actionToIpc),
+    fork(ipcToAction, "IPC_RESPONSE")
   ];
 
   yield put({ type: "SPAWN_ENTITY", payload: {

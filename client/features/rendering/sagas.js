@@ -2,7 +2,8 @@ import { takeEvery } from "redux-saga";
 import { select, put, call, take } from "redux-saga/effects";
 
 import {
-  getOffset
+  getOffset,
+  getMessage,
 } from "features/rendering/reducer";
 
 import { 
@@ -34,6 +35,14 @@ const renderCanvas = function* (context2d, value) {
       const { tileName } = yield select(getTileForEntity, uuid);
       const coords = yield select(getTileParams, x - dx, y - dy, tileName);
       context2d.drawImage(...coords);
+    }
+    const message = yield select(getMessage);
+    if(message) {
+      const prevFill = context2d.fillStyle;
+      context2d.fillStyle = "white";
+      context2d.font = "12px monospace";
+      context2d.fillText(message, 6, 12);
+      context2d.fillStyle = prevFill;
     }
   }
 };
