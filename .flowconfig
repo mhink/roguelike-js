@@ -1,0 +1,8 @@
+[ignore]
+<PROJECT_ROOT>/**/*.map
+
+[options]
+module.system.node.resolve_dirname=node_modules
+module.system.node.resolve_dirname=client
+
+module.name_mapper='^res\/.*$' -> '<PROJECT_ROOT>/client/MAPFlowStub.js.flow'

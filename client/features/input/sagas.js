@@ -1,6 +1,6 @@
 import { eventChannel } from "redux-saga";
 import { cancelled, take, select, put } from "redux-saga/effects";
-import { actionForKeySelector } from "./selectors";
+import { actionForKeySelector } from "./reducer";
 
 const subscribeToKeyboard = (emitter) => {
   const keyboardListener = (keyboardEvent) => {

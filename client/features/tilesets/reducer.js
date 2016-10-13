@@ -1,26 +1,53 @@
+// @flow
+
 import { every } from "lodash";
+import type { AppState, Action } from "root-reducer";
 
 const player = require("res/Player0.png");
 const floor = require("res/Floor.png");
+
+export type TilesetsState = {
+  ready: boolean,
+  images: {
+    [path: string]: {
+      img: ?Object,
+      sWidth: number,
+      sHeight: number,
+    }
+  },
+  tiles: {
+    [name: string]: {
+      image: string,
+      sx0:   number,
+      sy0:   number
+    }
+  },
+  registry: {
+    [key: string]: {
+      tileName: string
+    }
+  }
+}
 
 const initialState = {
   ready: false,
   tiles: {},
   images: {},
-  entityRegistry: {},
+  registry: {},
 };
 
-
-export default (state = initialState, { type, payload }) => {
-  switch (type) {
+export default (state : TilesetsState = initialState, action : Action) => {
+  switch (action.type) {
     case "SPAWN_ENTITY": {
-      const { uuid, tileName } = payload;
+      const { uuid, tileName } = action.payload;
       if(tileName) {
         return {
           ...state,
-          entityRegistry: {
-            ...state.entityRegistry,
-            [uuid]: tileName
+          registry: {
+            ...state.registry,
+            [uuid]: {
+              tileName
+            }
           }
         };
       } else {
@@ -28,7 +55,7 @@ export default (state = initialState, { type, payload }) => {
       }
     }
     case "REGISTER_TILE": {
-      const { name, ...data } = payload;
+      const { name, ...data } = action.payload;
       return {
         ...state,
         tiles: {
@@ -38,7 +65,7 @@ export default (state = initialState, { type, payload }) => {
       };
     }
     case "REGISTER_IMAGE": {
-      const { path, sWidth, sHeight } = payload;
+      const { path, sWidth, sHeight } = action.payload;
       return { 
         ...state,
         ready: false,
@@ -49,7 +76,7 @@ export default (state = initialState, { type, payload }) => {
       };
     }
     case "LOADED_IMAGE": {
-      const { path, img } = payload;
+      const { path, img } = action.payload;
       const nextImages = {
         ...state.images,
         [path]: {
@@ -72,12 +99,12 @@ export default (state = initialState, { type, payload }) => {
   }
 };
 
-export const getTileForEntity = (state, uuid) => state.tilesets.entityRegistry[uuid];
-export const shouldRender = (state) => state.tilesets.ready;
-export const getTileByName = (state, name) => state.tilesets.tiles[name];
-export const getImageByPath = (state, path) => state.tilesets.images[path];
+export const getTileForEntity = (state : AppState, uuid : string) => state.tilesets.registry[uuid];
+export const shouldRender = (state : AppState) => state.tilesets.ready;
+export const getTileByName = (state : AppState, name : string) => state.tilesets.tiles[name];
+export const getImageByPath = (state : AppState, path : string) => state.tilesets.images[path];
 
-export const getTileParams = (state, dx0, dy0, name) => {
+export const getTileParams = (state : AppState, dx0 : number, dy0 : number, name : string) => {
   const tile  = getTileByName(state, name);
   const image = getImageByPath(state, tile.image);
 

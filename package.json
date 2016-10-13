@@ -9,7 +9,8 @@
     "start:electron:dev": "NODE_ENV=development webpack --bail --config webpack/webpack.main.config.js && electron ./dist/main.js",
     "build:renderer:dev": "NODE_ENV=development webpack --bail --config webpack/webpack.client.config.js",
     "clean": "rimraf dist",
-    "lint": "eslint --color --ext .js client"
+    "lint": "eslint --color --ext .js client",
+    "flow": "flow"
   },
   "author": "Matt Hink <matt.hink@formidable.com>",
   "license": "MIT",
@@ -27,6 +28,7 @@
     "babel-eslint": "^7.0.0",
     "babel-loader": "^6.2.5",
     "babel-plugin-transform-dev": "^2.0.0",
+    "babel-plugin-transform-flow-strip-types": "^6.14.0",
     "babel-polyfill": "^6.16.0",
     "babel-preset-es2015": "^6.16.0",
     "babel-preset-react": "^6.16.0",
@@ -43,6 +45,7 @@
     "eslint-plugin-import": "^2.0.0",
     "eslint-plugin-redux-saga": "^0.1.4",
     "file-loader": "^0.9.0",
+    "flow-bin": "^0.33.0",
     "html-webpack-plugin": "^2.22.0",
     "json-loader": "^0.5.4",
     "postcss-loader": "^0.13.0",
