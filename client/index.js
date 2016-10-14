@@ -1,4 +1,5 @@
 import configureStore from "store";
+import CanvasRenderer from "canvas-renderer";
 
 require("siimple");
 require("./layout.css");
@@ -12,5 +13,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const context2d = canvas.getContext('2d');
   context2d.imageSmoothingEnabled = false;
 
-  window.$$store = configureStore({}, context2d);
+  const store = configureStore({}, context2d);
+  window.$$store = store;
+  window.$$renderer = new CanvasRenderer(store, context2d);
 });

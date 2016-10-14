@@ -30,7 +30,6 @@ export type TilesetsState = {
 }
 
 const initialState = {
-  ready: false,
   tiles: {},
   images: {},
   registry: {},
@@ -68,7 +67,6 @@ export default (state : TilesetsState = initialState, action : Action) => {
       const { path, sWidth, sHeight } = action.payload;
       return { 
         ...state,
-        ready: false,
         images: {
           ...state.images,
           [path]: { img: null, sWidth, sHeight }
@@ -85,11 +83,8 @@ export default (state : TilesetsState = initialState, action : Action) => {
         }
       };
 
-      const ready = every(nextImages, ({ img }) => img);
-
       return {
         ...state,
-        ready,
         images: nextImages
       };
     }
@@ -100,13 +95,18 @@ export default (state : TilesetsState = initialState, action : Action) => {
 };
 
 export const getTileForEntity = (state : AppState, uuid : string) => state.tilesets.registry[uuid];
-export const shouldRender = (state : AppState) => state.tilesets.ready;
 export const getTileByName = (state : AppState, name : string) => state.tilesets.tiles[name];
 export const getImageByPath = (state : AppState, path : string) => state.tilesets.images[path];
 
 export const getTileParams = (state : AppState, dx0 : number, dy0 : number, name : string) => {
   const tile  = getTileByName(state, name);
+  if(!tile) {
+    throw new Error(`Couldn't find a tile named ${name}`);
+  }
   const image = getImageByPath(state, tile.image);
+  if(!image) {
+    throw new Error(`Couldn't find an image named ${tile.image}`);
+  }
 
   const { sx0, sy0 } = tile;
   const { sWidth, sHeight } = image;

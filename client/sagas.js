@@ -16,7 +16,6 @@ export default function* rootSaga(context2d) {
   const renderingSink = yield call(channel);
   yield [
     fork(watchKeyboard, inputSource),
-    fork(renderingSystem, context2d, renderingSink),
     fork(resetCameraSystem),
     fork(takeEvery, "IPC_REQUEST", actionToIpc),
     fork(ipcToAction, "IPC_RESPONSE")
@@ -30,13 +29,12 @@ export default function* rootSaga(context2d) {
   }});
 
   yield call(initTilesets);
-  yield put(renderingSink, "@@INIT");
+  yield put({ type: "START_RENDERING" });
 
   yield fork(function* () {
     while (true) {
       const command = yield take(inputSource);
       yield put(command);
-      yield put(renderingSink, command);
     }
   });
 }

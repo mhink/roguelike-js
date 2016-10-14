@@ -1,4 +1,5 @@
 const initialState = {
+  ready: false,
   message: null,
   screenSize: {
     x: 9,
@@ -10,11 +11,18 @@ const initialState = {
   }
 }
 
+export const shouldRender = (state : AppState) => state.rendering.ready;
 export const getMessage = (state) => state.rendering.message;
 export const getOffset = (state) => state.rendering.offset;
 
 export default (state = initialState, action) => {
   switch(action.type) {
+    case "START_RENDERING": {
+      return {
+        ...state,
+        ready: true
+      }
+    }
     case "SET_MOVE_MODE": {
       const { moveMode } = action.payload;
       return {

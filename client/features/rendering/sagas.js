@@ -40,7 +40,7 @@ const renderCanvas = function* (context2d, value) {
     if(message) {
       const prevFill = context2d.fillStyle;
       context2d.fillStyle = "white";
-      context2d.font = "12px monospace";
+      context2d.font = "16px monospace";
       context2d.fillText(message, 6, 12);
       context2d.fillStyle = prevFill;
     }
