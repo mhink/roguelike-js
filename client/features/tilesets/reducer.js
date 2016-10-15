@@ -7,7 +7,6 @@ const player = require("res/Player0.png");
 const floor = require("res/Floor.png");
 
 export type TilesetsState = {
-  ready: boolean,
   images: {
     [path: string]: {
       img: ?Object,

@@ -17,6 +17,10 @@ const subscribeToIpc = (emitter) => {
   };
 };
 
+export const ipcSend = function* (payload) {
+  yield call([ipcRenderer, ipcRenderer.send], "ipc-saga", payload);
+}
+
 export const actionToIpc = function* (action) {
   yield call([ipcRenderer, ipcRenderer.send], "ipc-saga", action.payload);
 };
@@ -34,8 +38,4 @@ export const ipcToAction = function* (actionType) {
       channel.close();
     }
   }
-};
-
-const logIpcResponse = function* (action) {
-  yield call([console, console.log], action); // eslint-disable-line no-console
 };

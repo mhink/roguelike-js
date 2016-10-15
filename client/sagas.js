@@ -10,17 +10,23 @@ import {
   ipcToAction,
 } from "features/ipc/sagas";
 
+import {
+  commandSystem
+} from "features/commands/sagas";
+
 export default function* rootSaga(context2d) {
   const inputSource = yield call(channel);
-
   const renderingSink = yield call(channel);
+
   yield [
     fork(watchKeyboard, inputSource),
+    fork(commandSystem, inputSource),
     fork(resetCameraSystem),
     fork(takeEvery, "IPC_REQUEST", actionToIpc),
-    fork(ipcToAction, "IPC_RESPONSE")
+    fork(ipcToAction, "IPC_RESPONSE"),
   ];
 
+  yield call(initTilesets);
   yield put({ type: "SPAWN_ENTITY", payload: {
     uuid: uuid(),
     player: true,
@@ -28,13 +34,5 @@ export default function* rootSaga(context2d) {
     tileName: "player",
   }});
 
-  yield call(initTilesets);
   yield put({ type: "START_RENDERING" });
-
-  yield fork(function* () {
-    while (true) {
-      const command = yield take(inputSource);
-      yield put(command);
-    }
-  });
 }

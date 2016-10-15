@@ -27,7 +27,7 @@ export default function(state : AppState, action : Action) {
   return {
     input:      input(state.input, action),
     tilesets:   tilesets(state.tilesets, action),
-    maps:       maps(state.maps, action, (state.player && state.player.playerUuid)),
+    maps:       maps(state.maps, action),
     player:     player(state.player, action),
     rendering:  rendering(state.rendering, action),
   }

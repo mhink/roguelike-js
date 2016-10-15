@@ -1,41 +1,42 @@
-const MOVE_CAMERA_WEST      = { type: "MOVE_CAMERA", payload: { dx: -1, dy: +0 }}; 
-const MOVE_CAMERA_SOUTH     = { type: "MOVE_CAMERA", payload: { dx: +0, dy: +1 }};
-const MOVE_CAMERA_NORTH     = { type: "MOVE_CAMERA", payload: { dx: +0, dy: -1 }};
-const MOVE_CAMERA_EAST      = { type: "MOVE_CAMERA", payload: { dx: +1, dy: +0 }};
-const MOVE_CAMERA_NORTHWEST = { type: "MOVE_CAMERA", payload: { dx: -1, dy: -1 }};
-const MOVE_CAMERA_NORTHEAST = { type: "MOVE_CAMERA", payload: { dx: +1, dy: -1 }};
-const MOVE_CAMERA_SOUTHWEST = { type: "MOVE_CAMERA", payload: { dx: -1, dy: +1 }};
-const MOVE_CAMERA_SOUTHEAST = { type: "MOVE_CAMERA", payload: { dx: +1, dy: +1 }};
+const MOVE_CAMERA_WEST      = { command: "MOVE_CAMERA", payload: { dx: -1, dy: +0 }}; 
+const MOVE_CAMERA_SOUTH     = { command: "MOVE_CAMERA", payload: { dx: +0, dy: +1 }};
+const MOVE_CAMERA_NORTH     = { command: "MOVE_CAMERA", payload: { dx: +0, dy: -1 }};
+const MOVE_CAMERA_EAST      = { command: "MOVE_CAMERA", payload: { dx: +1, dy: +0 }};
+const MOVE_CAMERA_NORTHWEST = { command: "MOVE_CAMERA", payload: { dx: -1, dy: -1 }};
+const MOVE_CAMERA_NORTHEAST = { command: "MOVE_CAMERA", payload: { dx: +1, dy: -1 }};
+const MOVE_CAMERA_SOUTHWEST = { command: "MOVE_CAMERA", payload: { dx: -1, dy: +1 }};
+const MOVE_CAMERA_SOUTHEAST = { command: "MOVE_CAMERA", payload: { dx: +1, dy: +1 }};
 
-const MOVE_WEST      = { type: "MOVE_PLAYER", payload: { dx: -1, dy: +0 }}; 
-const MOVE_SOUTH     = { type: "MOVE_PLAYER", payload: { dx: +0, dy: +1 }};
-const MOVE_NORTH     = { type: "MOVE_PLAYER", payload: { dx: +0, dy: -1 }};
-const MOVE_EAST      = { type: "MOVE_PLAYER", payload: { dx: +1, dy: +0 }};
-const MOVE_NORTHWEST = { type: "MOVE_PLAYER", payload: { dx: -1, dy: -1 }};
-const MOVE_NORTHEAST = { type: "MOVE_PLAYER", payload: { dx: +1, dy: -1 }};
-const MOVE_SOUTHWEST = { type: "MOVE_PLAYER", payload: { dx: -1, dy: +1 }};
-const MOVE_SOUTHEAST = { type: "MOVE_PLAYER", payload: { dx: +1, dy: +1 }};
+const MOVE_WEST      = { command: "MOVE_PLAYER", payload: { dx: -1, dy: +0 }}; 
+const MOVE_SOUTH     = { command: "MOVE_PLAYER", payload: { dx: +0, dy: +1 }};
+const MOVE_NORTH     = { command: "MOVE_PLAYER", payload: { dx: +0, dy: -1 }};
+const MOVE_EAST      = { command: "MOVE_PLAYER", payload: { dx: +1, dy: +0 }};
+const MOVE_NORTHWEST = { command: "MOVE_PLAYER", payload: { dx: -1, dy: -1 }};
+const MOVE_NORTHEAST = { command: "MOVE_PLAYER", payload: { dx: +1, dy: -1 }};
+const MOVE_SOUTHWEST = { command: "MOVE_PLAYER", payload: { dx: -1, dy: +1 }};
+const MOVE_SOUTHEAST = { command: "MOVE_PLAYER", payload: { dx: +1, dy: +1 }};
 
-const setMoveMode = (moveMode) => ({ type: "SET_MOVE_MODE", payload: { moveMode }});
+const SET_INPUT_MODE_INSPECT = { command: "SET_INPUT_MODE", payload: { mode: "inspect" }};
+const SET_INPUT_MODE_NORMAL = { command: "SET_INPUT_MODE", payload: { mode: "normal" }};
 
-const QUIT_GAME = { type: "IPC_REQUEST", payload: { command: "QUIT" } };
+const QUIT_GAME = { command: "QUIT_GAME" };
 
 export const actionForKeySelector = (state, key) => {
-  switch(state.input.moveMode) {
-    case "camera": {
-      return state.input.cameraModeKeymap[key];
+  switch(state.input.mode) {
+    case "inspect": {
+      return state.input.inspectModeKeymap[key];
     }
-    case "player": 
+    case "normal": 
     default: {
-      return state.input.playerModeKeymap[key];
+      return state.input.normalModeKeymap[key];
     }
   }
 }
 
 const initialState = {
-  moveMode: "player",
-  playerModeKeymap: {
-    "KeyA": setMoveMode("camera"),
+  mode: "normal",
+  normalModeKeymap: {
+    "KeyA": SET_INPUT_MODE_INSPECT,
     "KeyQ": QUIT_GAME,
     "KeyH": MOVE_WEST,
     "KeyJ": MOVE_SOUTH,
@@ -46,8 +47,8 @@ const initialState = {
     "KeyB": MOVE_SOUTHWEST,
     "KeyN": MOVE_SOUTHEAST,
   },
-  cameraModeKeymap: {
-    "KeyA": setMoveMode("player"),
+  inspectModeKeymap: {
+    "KeyA": SET_INPUT_MODE_NORMAL,
     "KeyH": MOVE_CAMERA_WEST,
     "KeyJ": MOVE_CAMERA_SOUTH,
     "KeyK": MOVE_CAMERA_NORTH,
@@ -61,11 +62,11 @@ const initialState = {
 
 export default (state = initialState, action) => {
   switch (action.type) {
-    case "SET_MOVE_MODE": {
-      const { moveMode } = action.payload;
+    case "SET_INPUT_MODE": {
+      const { mode } = action.payload;
       return {
         ...state,
-        moveMode,
+        mode,
       };
     }
     default: {

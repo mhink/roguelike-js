@@ -6,7 +6,7 @@ console.log("Instantiated electron app.");
 
 ipcMain.on("ipc-saga", (event, payload) => {
   switch(payload.command) {
-    case "QUIT": {
+    case "QUIT_APP": {
       app.quit();
     }
     default: {
