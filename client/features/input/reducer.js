@@ -23,7 +23,7 @@ const QUIT_GAME = { command: "QUIT_GAME" };
 
 const DEBUG_IPC = { command: "DEBUG_IPC" };
 
-export const actionForKeySelector = (state, key) => {
+export const commandForKeySelector = (state, key) => {
   switch (state.input.mode) {
     case "inspect": {
       return state.input.inspectModeKeymap[key];

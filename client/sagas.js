@@ -2,25 +2,22 @@ import { v4 as uuid } from "uuid";
 import { takeEvery, channel } from "redux-saga";
 import { put, fork, call } from "redux-saga/effects";
 
-import { watchKeyboard } from "features/input/sagas";
 import { initTilesets } from "features/tilesets/sagas";
-import { ipcChannel, takeEveryIpc } from "ipc-sagas";
+import { rawKeyboardChannel, takeEveryAsCommand } from "keyboard-saga-helpers";
+import { ipcChannel, takeEveryIpc } from "ipc-saga-helpers";
+import runCommandSaga from "commands";
 
-import commandSystem from "commands";
-
-function* logIpc(foo, ipcResponse) {
-  const { event, payload } = ipcResponse;
-  console.log(payload);
+function* logIpc(...args) {
+  console.log(args);
 }
 
 export default function* rootSaga() {
-  const commandChannel = yield channel();
-  const ipcResponseChannel = yield ipcChannel("ipc-saga");
+  const rkChan = yield rawKeyboardChannel();
+  const ipcChan = yield ipcChannel("ipc-saga");
 
   yield [
-    fork(watchKeyboard, commandChannel),
-    fork(commandSystem, commandChannel),
-    fork(takeEveryIpc, ipcResponseChannel, logIpc, "foobar"),
+    fork(takeEveryAsCommand, rkChan, runCommandSaga),
+    fork(takeEveryIpc, ipcChan, logIpc),
   ];
 
   yield call(initTilesets);

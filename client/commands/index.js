@@ -15,16 +15,13 @@ const SAGA_FOR_COMMAND = {
   "DEBUG_IPC":      debugIpc
 };
 
-export default function* (commandSource) {
-  while (true) {
-    const { command, payload = {} } = yield take(commandSource);
-    yield call(clearMessage);
-    const commandSaga = SAGA_FOR_COMMAND[command];
-    if (commandSaga) {
-      yield call(commandSaga, payload);
-    } else {
-      console.warn(`commandSystem received a command with no corresponding saga: ${command}`);
-      console.warn("Payload was:", payload);
-    }
+export default function* ({ command, payload = {} }) {
+  yield call(clearMessage);
+  const commandSaga = SAGA_FOR_COMMAND[command];
+  if (commandSaga) {
+    yield call(commandSaga, payload);
+  } else {
+    console.warn(`commandSystem received a command with no corresponding saga: ${command}`);
+    console.warn("Payload was:", payload);
   }
-};
+}
