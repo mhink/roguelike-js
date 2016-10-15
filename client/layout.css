@@ -1,9 +1,14 @@
+:global html, :global body {
+  overflow: hidden;
+}
+
 :global * {
   box-sizing: border-box;
   margin: 0;
 }
 
 :global body {
+  background: black;
   height: 100vh;
   width: 100vw;
 }
