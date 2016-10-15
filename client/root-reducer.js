@@ -23,12 +23,10 @@ export type Action = {
   payload: Object,
 };
 
-export default function(state : AppState, action : Action) {
-  return {
-    input:      input(state.input, action),
-    tilesets:   tilesets(state.tilesets, action),
-    maps:       maps(state.maps, action),
-    player:     player(state.player, action),
-    rendering:  rendering(state.rendering, action),
-  }
-};
+export default combineReducers({
+  input,
+  tilesets,
+  maps,
+  player,
+  rendering
+});
