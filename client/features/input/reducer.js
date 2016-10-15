@@ -21,6 +21,8 @@ const SET_INPUT_MODE_NORMAL = { command: "SET_INPUT_MODE", payload: { mode: "nor
 
 const QUIT_GAME = { command: "QUIT_GAME" };
 
+const DEBUG_IPC = { command: "DEBUG_IPC" };
+
 export const actionForKeySelector = (state, key) => {
   switch (state.input.mode) {
     case "inspect": {
@@ -45,7 +47,8 @@ const initialState = {
     "KeyY": MOVE_NORTHWEST,
     "KeyU": MOVE_NORTHEAST,
     "KeyB": MOVE_SOUTHWEST,
-    "KeyN": MOVE_SOUTHEAST
+    "KeyN": MOVE_SOUTHEAST,
+    "KeyD": DEBUG_IPC
   },
   inspectModeKeymap: {
     "KeyA": SET_INPUT_MODE_NORMAL,

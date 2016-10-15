@@ -4,7 +4,7 @@ import {
   getPlayerPosition
 } from "features/maps/reducer";
 
-export const setInputModeSaga = function* ({ mode }) {
+export default function* ({ mode }) {
   yield put({ type:    "SET_SCREEN_MESSAGE", payload: {
     message: `Input mode set to ${mode}`
   } });

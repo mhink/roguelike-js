@@ -4,7 +4,7 @@ import {
   getPlayerUuid
 } from "features/player/reducer";
 
-export const movePlayerSaga = function* ({ dx, dy }) {
+export default function* ({ dx, dy }) {
   const uuid = yield select(getPlayerUuid);
   yield put({
     type:    "MOVE_ENTITY",
