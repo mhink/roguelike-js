@@ -10,7 +10,7 @@ document.addEventListener("DOMContentLoaded", () => {
   canvas.height = window.innerHeight;
   document.body.appendChild(canvas);
 
-  const context2d = canvas.getContext('2d');
+  const context2d = canvas.getContext("2d");
   context2d.imageSmoothingEnabled = false;
 
   const store = configureStore({}, context2d);

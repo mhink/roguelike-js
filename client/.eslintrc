@@ -1,10 +1,12 @@
 {
   "parser": "babel-eslint",
   "extends": [
-    "formidable/configurations/es6-browser"
+    "formidable/configurations/es6-browser",
+    "plugin:flowtype/recommended"
   ],
   "plugins": [
-    "redux-saga"
+    "redux-saga",
+    "flowtype"
   ],
   "settings": {
     "import/resolver": {
@@ -14,9 +16,24 @@
     }
   },
   "rules": {
-    "no-multi-spaces": 0,
     "generator-star-spacing": ["error", { "before": false, "after": true }],
     "no-constant-condition": 0,
-    "indent": ["error", 2, { "SwitchCase": 1 }]
+    "indent": ["error", 2, { "SwitchCase": 1 }],
+    "no-console": ["error", { "allow": ["warn", "error"]}],
+    "key-spacing": ["error", {
+      "singleLine": {
+        "beforeColon": false,
+        "afterColon": true,
+      },
+      "multiLine": {
+        "beforeColon": false,
+        "afterColon": true,
+      },
+      "align": {
+        "beforeColon": false,
+        "afterColon": true,
+        "on": "value"
+      }
+    }]
   }
 }

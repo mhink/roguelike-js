@@ -1,40 +1,40 @@
-const MOVE_CAMERA_WEST      = { command: "MOVE_CAMERA", payload: { dx: -1, dy: +0 }}; 
-const MOVE_CAMERA_SOUTH     = { command: "MOVE_CAMERA", payload: { dx: +0, dy: +1 }};
-const MOVE_CAMERA_NORTH     = { command: "MOVE_CAMERA", payload: { dx: +0, dy: -1 }};
-const MOVE_CAMERA_EAST      = { command: "MOVE_CAMERA", payload: { dx: +1, dy: +0 }};
-const MOVE_CAMERA_NORTHWEST = { command: "MOVE_CAMERA", payload: { dx: -1, dy: -1 }};
-const MOVE_CAMERA_NORTHEAST = { command: "MOVE_CAMERA", payload: { dx: +1, dy: -1 }};
-const MOVE_CAMERA_SOUTHWEST = { command: "MOVE_CAMERA", payload: { dx: -1, dy: +1 }};
-const MOVE_CAMERA_SOUTHEAST = { command: "MOVE_CAMERA", payload: { dx: +1, dy: +1 }};
+const MOVE_CAMERA_WEST = { command: "MOVE_CAMERA", payload: { dx: -1, dy: +0 } };
+const MOVE_CAMERA_SOUTH = { command: "MOVE_CAMERA", payload: { dx: +0, dy: +1 } };
+const MOVE_CAMERA_NORTH = { command: "MOVE_CAMERA", payload: { dx: +0, dy: -1 } };
+const MOVE_CAMERA_EAST = { command: "MOVE_CAMERA", payload: { dx: +1, dy: +0 } };
+const MOVE_CAMERA_NORTHWEST = { command: "MOVE_CAMERA", payload: { dx: -1, dy: -1 } };
+const MOVE_CAMERA_NORTHEAST = { command: "MOVE_CAMERA", payload: { dx: +1, dy: -1 } };
+const MOVE_CAMERA_SOUTHWEST = { command: "MOVE_CAMERA", payload: { dx: -1, dy: +1 } };
+const MOVE_CAMERA_SOUTHEAST = { command: "MOVE_CAMERA", payload: { dx: +1, dy: +1 } };
 
-const MOVE_WEST      = { command: "MOVE_PLAYER", payload: { dx: -1, dy: +0 }}; 
-const MOVE_SOUTH     = { command: "MOVE_PLAYER", payload: { dx: +0, dy: +1 }};
-const MOVE_NORTH     = { command: "MOVE_PLAYER", payload: { dx: +0, dy: -1 }};
-const MOVE_EAST      = { command: "MOVE_PLAYER", payload: { dx: +1, dy: +0 }};
-const MOVE_NORTHWEST = { command: "MOVE_PLAYER", payload: { dx: -1, dy: -1 }};
-const MOVE_NORTHEAST = { command: "MOVE_PLAYER", payload: { dx: +1, dy: -1 }};
-const MOVE_SOUTHWEST = { command: "MOVE_PLAYER", payload: { dx: -1, dy: +1 }};
-const MOVE_SOUTHEAST = { command: "MOVE_PLAYER", payload: { dx: +1, dy: +1 }};
+const MOVE_WEST = { command: "MOVE_PLAYER", payload: { dx: -1, dy: +0 } };
+const MOVE_SOUTH = { command: "MOVE_PLAYER", payload: { dx: +0, dy: +1 } };
+const MOVE_NORTH = { command: "MOVE_PLAYER", payload: { dx: +0, dy: -1 } };
+const MOVE_EAST = { command: "MOVE_PLAYER", payload: { dx: +1, dy: +0 } };
+const MOVE_NORTHWEST = { command: "MOVE_PLAYER", payload: { dx: -1, dy: -1 } };
+const MOVE_NORTHEAST = { command: "MOVE_PLAYER", payload: { dx: +1, dy: -1 } };
+const MOVE_SOUTHWEST = { command: "MOVE_PLAYER", payload: { dx: -1, dy: +1 } };
+const MOVE_SOUTHEAST = { command: "MOVE_PLAYER", payload: { dx: +1, dy: +1 } };
 
-const SET_INPUT_MODE_INSPECT = { command: "SET_INPUT_MODE", payload: { mode: "inspect" }};
-const SET_INPUT_MODE_NORMAL = { command: "SET_INPUT_MODE", payload: { mode: "normal" }};
+const SET_INPUT_MODE_INSPECT = { command: "SET_INPUT_MODE", payload: { mode: "inspect" } };
+const SET_INPUT_MODE_NORMAL = { command: "SET_INPUT_MODE", payload: { mode: "normal" } };
 
 const QUIT_GAME = { command: "QUIT_GAME" };
 
 export const actionForKeySelector = (state, key) => {
-  switch(state.input.mode) {
+  switch (state.input.mode) {
     case "inspect": {
       return state.input.inspectModeKeymap[key];
     }
-    case "normal": 
+    case "normal":
     default: {
       return state.input.normalModeKeymap[key];
     }
   }
-}
+};
 
 const initialState = {
-  mode: "normal",
+  mode:             "normal",
   normalModeKeymap: {
     "KeyA": SET_INPUT_MODE_INSPECT,
     "KeyQ": QUIT_GAME,
@@ -45,7 +45,7 @@ const initialState = {
     "KeyY": MOVE_NORTHWEST,
     "KeyU": MOVE_NORTHEAST,
     "KeyB": MOVE_SOUTHWEST,
-    "KeyN": MOVE_SOUTHEAST,
+    "KeyN": MOVE_SOUTHEAST
   },
   inspectModeKeymap: {
     "KeyA": SET_INPUT_MODE_NORMAL,
@@ -56,7 +56,7 @@ const initialState = {
     "KeyY": MOVE_CAMERA_NORTHWEST,
     "KeyU": MOVE_CAMERA_NORTHEAST,
     "KeyB": MOVE_CAMERA_SOUTHWEST,
-    "KeyN": MOVE_CAMERA_SOUTHEAST,
+    "KeyN": MOVE_CAMERA_SOUTHEAST
   }
 };
 
@@ -66,7 +66,7 @@ export default (state = initialState, action) => {
       const { mode } = action.payload;
       return {
         ...state,
-        mode,
+        mode
       };
     }
     default: {

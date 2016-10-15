@@ -1,5 +1,5 @@
 import { ipcRenderer } from "electron";
-import { takeEvery, eventChannel } from "redux-saga";
+import { eventChannel } from "redux-saga";
 import { put, call, take, cancelled } from "redux-saga/effects";
 
 const subscribeToIpc = (emitter) => {
@@ -19,7 +19,7 @@ const subscribeToIpc = (emitter) => {
 
 export const ipcSend = function* (payload) {
   yield call([ipcRenderer, ipcRenderer.send], "ipc-saga", payload);
-}
+};
 
 export const actionToIpc = function* (action) {
   yield call([ipcRenderer, ipcRenderer.send], "ipc-saga", action.payload);

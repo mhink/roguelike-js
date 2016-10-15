@@ -5,13 +5,13 @@ const initialState = {
 export const getPlayerUuid = (state) => state.player.playerUuid;
 
 export default (state = initialState, { type, payload }) => {
-  switch(type) {
+  switch (type) {
     case "SPAWN_ENTITY": {
       const { uuid, player } = payload;
-      if(player) {
+      if (player) {
         return {
-          playerUuid: uuid,
-        }
+          playerUuid: uuid
+        };
       } else {
         return state;
       }

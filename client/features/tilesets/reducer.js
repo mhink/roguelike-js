@@ -1,15 +1,11 @@
 // @flow
 
-import { every } from "lodash";
 import type { AppState, Action } from "root-reducer";
-
-const player = require("res/Player0.png");
-const floor = require("res/Floor.png");
 
 export type TilesetsState = {
   images: {
     [path: string]: {
-      img: ?Object,
+      img: Object,
       sWidth: number,
       sHeight: number,
     }
@@ -17,8 +13,8 @@ export type TilesetsState = {
   tiles: {
     [name: string]: {
       image: string,
-      sx0:   number,
-      sy0:   number
+      sx0: number,
+      sy0: number
     }
   },
   registry: {
@@ -29,16 +25,16 @@ export type TilesetsState = {
 }
 
 const initialState = {
-  tiles: {},
-  images: {},
-  registry: {},
+  tiles:    {},
+  images:   {},
+  registry: {}
 };
 
-export default (state : TilesetsState = initialState, action : Action) => {
+export default (state: TilesetsState = initialState, action: Action) => {
   switch (action.type) {
     case "SPAWN_ENTITY": {
       const { uuid, tileName } = action.payload;
-      if(tileName) {
+      if (tileName) {
         return {
           ...state,
           registry: {
@@ -53,38 +49,23 @@ export default (state : TilesetsState = initialState, action : Action) => {
       }
     }
     case "REGISTER_TILE": {
-      const { name, ...data } = action.payload;
+      const { name, ...tileData } = action.payload;
       return {
         ...state,
         tiles: {
           ...state.tiles,
-          [name]: data
+          [name]: tileData
         }
       };
     }
     case "REGISTER_IMAGE": {
-      const { path, sWidth, sHeight } = action.payload;
-      return { 
+      const { path, ...imageData } = action.payload;
+      return {
         ...state,
         images: {
           ...state.images,
-          [path]: { img: null, sWidth, sHeight }
+          [path]: imageData
         }
-      };
-    }
-    case "LOADED_IMAGE": {
-      const { path, img } = action.payload;
-      const nextImages = {
-        ...state.images,
-        [path]: {
-          ...state.images[path],
-          img
-        }
-      };
-
-      return {
-        ...state,
-        images: nextImages
       };
     }
     default: {
@@ -93,33 +74,37 @@ export default (state : TilesetsState = initialState, action : Action) => {
   }
 };
 
-export const getTileForEntity = (state : AppState, uuid : string) => state.tilesets.registry[uuid];
-export const getTileByName = (state : AppState, name : string) => state.tilesets.tiles[name];
-export const getImageByPath = (state : AppState, path : string) => state.tilesets.images[path];
+export const getTileForEntity = (state: AppState, uuid: string) => state.tilesets.registry[uuid];
+export const getTileByName = (state: AppState, name: string) => state.tilesets.tiles[name];
+export const getImageByPath = (state: AppState, path: string) => state.tilesets.images[path];
 
-export const getTileParams = (state : AppState, dx0 : number, dy0 : number, name : string) => {
-  const tile  = getTileByName(state, name);
-  if(!tile) {
+const TILE_HEIGHT_SCALING_FACTOR = 4;
+const TILE_WIDTH_SCALING_FACTOR = 4;
+
+// eslint-disable-next-line max-params
+export const getTileParams = (state: AppState, dx0: number, dy0: number, name: string) => {
+  const tile = getTileByName(state, name);
+  if (!tile) {
     throw new Error(`Couldn't find a tile named ${name}`);
   }
   const image = getImageByPath(state, tile.image);
-  if(!image) {
+  if (!image) {
     throw new Error(`Couldn't find an image named ${tile.image}`);
   }
 
   const { sx0, sy0 } = tile;
   const { sWidth, sHeight } = image;
-  const sx      = sx0 * sWidth;
-  const sy      = sy0 * sHeight;
+  const sx = sx0 * sWidth;
+  const sy = sy0 * sHeight;
 
-  const dx      = 4 * dx0 * sWidth;
-  const dy      = 4 * dy0 * sHeight;
-  const dWidth  = 4 * sWidth;
-  const dHeight = 4 * sHeight;
+  const dx = dx0 * sWidth * TILE_WIDTH_SCALING_FACTOR;
+  const dy = dy0 * sHeight * TILE_HEIGHT_SCALING_FACTOR;
+  const dWidth = sWidth * TILE_WIDTH_SCALING_FACTOR;
+  const dHeight = sHeight * TILE_HEIGHT_SCALING_FACTOR;
 
   return [
-    image.img, 
-    sx, sy, 
+    image.img,
+    sx, sy,
     sWidth, sHeight,
     dx, dy,
     dWidth, dHeight

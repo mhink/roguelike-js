@@ -1,4 +1,5 @@
 // @flow
+/* eslint max-len: [ "error", 105 ] no-shadow: ["error", { "allow": ["uuid"]}]*/
 
 import { map } from "lodash";
 import type { AppState, Action } from "root-reducer";
@@ -7,6 +8,8 @@ type uuid = string;
 
 type EntityPosition = {
   mapUuid: uuid,
+  x: number,
+  y: number
 };
 
 type Map = {
@@ -23,29 +26,25 @@ export type MapsState = {
     [key: uuid]: Map
   },
   registry: {
-    [key: uuid]: {
-      mapUuid: uuid,
-      x: number,
-      y: number
-    }
+    [key: uuid]: EntityPosition
   }
 };
 
 const initialState : MapsState = {
   currentMap: null,
-  maps: {},
-  registry: {}
+  maps:       {},
+  registry:   {}
 };
 
-export const getPlayerPosition = (state : AppState) => state.maps.registry[state.player.playerUuid];
-export const getPositions = (state : AppState) => map(state.maps.registry, (pos, uuid) => [uuid, pos]);
+export const getPlayerPosition = (state: AppState) => state.maps.registry[state.player.playerUuid];
+export const getPositions = (state: AppState) => map(state.maps.registry, (pos, uuid) => [uuid, pos]);
 
-export default (state : MapsState = initialState,  action : Action) : MapsState => {
+export default (state: MapsState = initialState, action: Action) : MapsState => {
   switch (action.type) {
     case "MOVE_ENTITY": {
       const { uuid, dx, dy } = action.payload;
       const entity = state.registry[uuid];
-      if(entity) {
+      if (entity) {
         const { x: x0, y: y0 } = entity;
         return {
           ...state,
@@ -53,17 +52,17 @@ export default (state : MapsState = initialState,  action : Action) : MapsState 
             ...state.registry,
             [uuid]: {
               x: x0 + dx,
-              y: y0 + dy,
+              y: y0 + dy
             }
           }
-        }
+        };
       } else {
         return state;
       }
     }
     case "SPAWN_ENTITY": {
       const { uuid, position } = action.payload;
-      if(position) {
+      if (position) {
         return {
           ...state,
           registry: {

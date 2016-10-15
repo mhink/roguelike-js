@@ -14,7 +14,7 @@ const subscribeToKeyboard = (emitter) => {
   };
 };
 
-export const watchKeyboard = function* (inputSink) {
+export const watchKeyboard = function* (commandSink) {
   const rawKeyboardEventSource = yield eventChannel(subscribeToKeyboard);
 
   try {
@@ -22,7 +22,7 @@ export const watchKeyboard = function* (inputSink) {
       const { keyboardEvent } = yield take(rawKeyboardEventSource);
       const action = yield select(actionForKeySelector, keyboardEvent.code);
       if (action) {
-        yield put(inputSink, action);
+        yield put(commandSink, action);
       }
     }
   } finally {

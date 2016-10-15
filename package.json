@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "concurrently 'npm run start:dev-server' 'npm run start:electron:dev'",
+    "start": "concurrently -k -s first 'npm run start:dev-server' 'npm run start:electron:dev'",
     "start:dev-server": "NODE_ENV=development webpack-dev-server --hot --inline --config webpack/webpack.client.config.js",
     "start:electron:dev": "NODE_ENV=development webpack --bail --config webpack/webpack.main.config.js && electron ./dist/main.js",
     "build:renderer:dev": "NODE_ENV=development webpack --bail --config webpack/webpack.client.config.js",
@@ -42,6 +42,7 @@
     "eslint-config-formidable": "^2.0.1",
     "eslint-import-resolver-webpack": "^0.6.0",
     "eslint-plugin-filenames": "^1.1.0",
+    "eslint-plugin-flowtype": "^2.20.0",
     "eslint-plugin-import": "^2.0.0",
     "eslint-plugin-redux-saga": "^0.1.4",
     "file-loader": "^0.9.0",

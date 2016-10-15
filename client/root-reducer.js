@@ -11,11 +11,11 @@ import type { TilesetsState } from "features/tilesets/reducer";
 import type { MapsState } from "features/maps/reducer";
 
 export type AppState = {
-  input:      Object,
-  tilesets:   TilesetsState,
-  maps:       MapsState,
-  player:     Object,
-  rendering:  Object,
+  input: Object,
+  tilesets: TilesetsState,
+  maps: MapsState,
+  player: Object,
+  rendering: Object,
 };
 
 export type Action = {

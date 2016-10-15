@@ -1,4 +1,4 @@
-import { take, call, put, select } from "redux-saga/effects";
+import { take, call } from "redux-saga/effects";
 
 import { clearMessageSaga } from "./clear-message-saga";
 import { movePlayerSaga } from "./move-player-saga";
@@ -7,15 +7,15 @@ import { setInputModeSaga } from "./set-input-mode-saga";
 import { quitGameSaga } from "./quit-game-saga";
 
 const SAGA_FOR_COMMAND = {
-  "MOVE_CAMERA": moveCameraSaga,
-  "MOVE_PLAYER": movePlayerSaga,
+  "MOVE_CAMERA":    moveCameraSaga,
+  "MOVE_PLAYER":    movePlayerSaga,
   "SET_INPUT_MODE": setInputModeSaga,
-  "QUIT_GAME": quitGameSaga,
+  "QUIT_GAME":      quitGameSaga
 };
 
-export const commandSystem = function* (inputSource) {
+export const commandSystem = function* (commandSource) {
   while (true) {
-    const { command, payload = {} } = yield take(inputSource);
+    const { command, payload = {} } = yield take(commandSource);
     yield call(clearMessageSaga);
     const commandSaga = SAGA_FOR_COMMAND[command];
     if (commandSaga) {
@@ -25,4 +25,4 @@ export const commandSystem = function* (inputSource) {
       console.warn("Payload was:", payload);
     }
   }
-}
+};
