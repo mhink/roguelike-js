@@ -5,11 +5,11 @@ import {
   getCameraFrozen,
   setCameraFrozen,
   centerViewport
-} from "features/rendering/reducer";
+} from "features/rendering";
 
 import {
   getPlayerPosition
-} from "features/maps/reducer";
+} from "features/maps";
 
 export default function* () {
   const isCameraFrozen = yield select(getCameraFrozen);

@@ -30,6 +30,26 @@ const initialState = {
   registry: {}
 };
 
+export const registerImage = (path, img, sWidth, sHeight) => ({
+  type: "REGISTER_IMAGE",
+  payload: {
+    path,
+    img,
+    sWidth,
+    sHeight
+  }
+});
+
+export const registerTile = (name, image, sx0, sy0) => ({
+  type: "REGISTER_TILE",
+  payload: {
+    name,
+    image,
+    sx0,
+    sy0
+  }
+});
+
 export default (state: TilesetsState = initialState, action: Action) => {
   switch (action.type) {
     case "SPAWN_ENTITY": {

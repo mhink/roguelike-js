@@ -5,17 +5,17 @@ import {
   getMessage,
   shouldRender,
   backgroundTiles,
-} from "features/rendering/reducer";
+} from "features/rendering";
 
 import {
   getPositions,
   getCurrentMapDimensions
-} from "features/maps/reducer";
+} from "features/maps";
 
 import {
   getTileParams,
   getTileForEntity
-} from "features/tilesets/reducer";
+} from "features/tilesets";
 
 const renderBackdrop = (context2d, dimensions) => {
   const { sx, sy } = dimensions;

@@ -3,15 +3,15 @@ import { put, select } from "redux-saga/effects";
 import {
   setScreenMessage,
   centerViewport
-} from "features/rendering/reducer";
+} from "features/rendering";
 
 import {
   getPlayerPosition
-} from "features/maps/reducer";
+} from "features/maps";
 
 import {
   setInputMode
-} from "features/input/reducer";
+} from "features/input";
 
 export default function* ({ mode }) {
   yield put(setScreenMessage(`Input mode set to ${mode}`));

@@ -2,11 +2,11 @@ import { put, select } from "redux-saga/effects";
 
 import {
   entityCanMoveTo
-} from "features/maps/reducer";
+} from "features/maps";
 
 import {
   getPlayerUuid
-} from "features/player/reducer";
+} from "features/player";
 
 export default function* ({ dx, dy }) {
   const uuid = yield select(getPlayerUuid);

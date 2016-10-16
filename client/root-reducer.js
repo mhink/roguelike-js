@@ -1,14 +1,14 @@
 // @flow
 
 import { combineReducers } from "redux";
-import input from "features/input/reducer";
-import tilesets from "features/tilesets/reducer";
-import maps from "features/maps/reducer";
-import player from "features/player/reducer";
-import rendering from "features/rendering/reducer";
+import input from "features/input";
+import tilesets from "features/tilesets";
+import maps from "features/maps";
+import player from "features/player";
+import rendering from "features/rendering";
 
-import type { TilesetsState } from "features/tilesets/reducer";
-import type { MapsState } from "features/maps/reducer";
+import type { TilesetsState } from "features/tilesets";
+import type { MapsState } from "features/maps";
 
 export type AppState = {
   input: Object,
