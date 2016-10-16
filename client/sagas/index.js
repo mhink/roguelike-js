@@ -5,7 +5,7 @@ import { put, fork, call } from "redux-saga/effects";
 import { initTilesets } from "init-tilesets";
 import { rawKeyboardChannel, takeEveryAsCommand } from "keyboard-saga-helpers";
 import { ipcChannel, takeEveryIpc } from "ipc-saga-helpers";
-import runCommandSaga from "commands";
+import runCommandSaga from "sagas/commands";
 import { spawnEntity } from "spawn-entity-action";
 
 function* logIpc(...args) {
