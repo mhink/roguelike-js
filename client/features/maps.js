@@ -2,6 +2,7 @@
 /* eslint max-len: [ "error", 105 ] no-shadow: ["error", { "allow": ["uuid"]}]*/
 
 import { map } from "lodash";
+import { v4 as uuid } from "uuid";
 
 const initialState = {
   currentMap: null,
@@ -27,6 +28,17 @@ export const getCurrentMapDimensions = (state) => {
 
 export const getPlayerPosition = (state) => state.maps.registry[state.player.playerUuid];
 export const getPositions = (state) => map(state.maps.registry, (pos, uuid) => [uuid, pos]);
+
+export const createMap = (background, x, y) => ({
+  type: "CREATE_MAP",
+  payload: {
+    uuid: uuid(),
+    background,
+    dimensions: {
+      x, y
+    }
+  }
+});
 
 export default (state = initialState, action) => {
   switch (action.type) {

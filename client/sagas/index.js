@@ -7,13 +7,14 @@ import { rawKeyboardChannel, takeEveryAsCommand } from "keyboard-saga-helpers";
 import { ipcChannel, takeEveryIpc } from "ipc-saga-helpers";
 import runCommandSaga from "sagas/commands";
 import { spawnEntity } from "spawn-entity-action";
+import { createMap } from "features/maps";
 
 function* logIpc(...args) {
   console.log(args);
 }
 
-export default function* rootSaga() {
-  const rkChan = yield rawKeyboardChannel();
+export default function* rootSaga(canvas) {
+  const rkChan = yield rawKeyboardChannel(canvas);
   const ipcChan = yield ipcChannel("ipc-saga");
 
   yield [
@@ -22,17 +23,8 @@ export default function* rootSaga() {
   ];
 
   yield call(initTilesets);
-  yield put({
-    type:    "CREATE_MAP",
-    payload: {
-      uuid:       uuid(),
-      background: "woodfloor",
-      dimensions: {
-        x: 15,
-        y: 15
-      }
-    }
-  });
+  yield put(createMap("wood-day", 15, 15));
+  yield put(createMap("grass", 4, 4));
   yield put(spawnEntity({
     player:   true,
     position: { x: 7, y: 7},

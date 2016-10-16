@@ -7,7 +7,7 @@ import sagaMonitor from "./util/saga-monitor";
 
 const reduxDevtools = window.devToolsExtension || (() => (noop) => noop);
 
-export default function configureStore(initialState = {}, context2d) {
+export default function configureStore(initialState = {}, canvas) {
   const sagaMiddleware = createSagaMiddleware({
     sagaMonitor
   });
@@ -27,7 +27,7 @@ export default function configureStore(initialState = {}, context2d) {
     compose(...enhancers)
   );
 
-  sagaMiddleware.run(rootSaga, context2d);
+  sagaMiddleware.run(rootSaga, canvas);
 
   return store;
 }

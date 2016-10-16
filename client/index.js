@@ -13,7 +13,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const context2d = canvas.getContext("2d");
   context2d.imageSmoothingEnabled = false;
 
-  const store = configureStore({}, context2d);
+  const store = configureStore({}, canvas);
   store.dispatch({
     type: "INIT_SCREEN_SIZE",
     payload: {

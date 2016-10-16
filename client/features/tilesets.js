@@ -40,7 +40,15 @@ export const registerImage = (path, img, sWidth, sHeight) => ({
   }
 });
 
-export const registerTile = (name, image, sx0, sy0) => ({
+export const batchRegisterTiles = (image, tiles) => ({
+  type: "BATCH_REGISTER_TILES",
+  payload: {
+    image,
+    tiles
+  }
+});
+
+export const registerTile = (name, sx0, sy0, image) => ({
   type: "REGISTER_TILE",
   payload: {
     name,
@@ -67,6 +75,19 @@ export default (state: TilesetsState = initialState, action: Action) => {
       } else {
         return state;
       }
+    }
+    case "BATCH_REGISTER_TILES": {
+      const { image, tiles } = action.payload;
+      const newTiles = {...state.tiles};
+      for(const tile of tiles) {
+        const [name, sx0, sy0] = tile;
+        newTiles[name] = { image, sx0, sy0 };
+      }
+
+      return {
+        ...state,
+        tiles: newTiles
+      };
     }
     case "REGISTER_TILE": {
       const { name, ...tileData } = action.payload;

@@ -3,8 +3,11 @@ import player from "res/Player0.png";
 import floor from "res/Floor.png";
 import {
   registerImage,
-  registerTile
+  registerTile,
+  batchRegisterTiles
 } from "features/tilesets";
+
+import floorTiledefs from "res/Floor.tiledefs.js";
 
 const loadTileset = (path) => new Promise((resolve, reject) => {
   try {
@@ -33,25 +36,12 @@ export const initTilesets = function* () {
 
   yield put(registerTile(
     "player",
-    player,
-    0, 0
+    0, 0,
+    player
   ));
 
-  yield put(registerTile(
-    "grass",
+  yield put(batchRegisterTiles(
     floor,
-    8, 7
-  ));
-
-  yield put(registerTile(
-    "woodfloor",
-    floor,
-    8, 19
-  ));
-
-  yield put(registerTile(
-    "woodfloor-dark",
-    floor,
-    8, 22
+    floorTiledefs
   ));
 };

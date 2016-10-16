@@ -26,6 +26,7 @@ const renderBackground = (context2d, state) => {
   for (const [x, y, tile] of backgroundTiles(state)) {
     try {
       const coords = getTileParams(state, x, y, tile);
+      console.log(coords);
       context2d.drawImage(...coords);
     } catch (err) {
       console.error(`Couldn't draw image- error: ${err}`);
