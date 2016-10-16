@@ -22,11 +22,22 @@ export default function* rootSaga() {
 
   yield call(initTilesets);
   yield put({
+    type:    "CREATE_MAP",
+    payload: {
+      uuid:       uuid(),
+      background: "woodfloor",
+      dimensions: {
+        x: 15,
+        y: 15
+      }
+    }
+  });
+  yield put({
     type:    "SPAWN_ENTITY",
     payload: {
       uuid:     uuid(),
       player:   true,
-      position: { x: 4, y: 4 },
+      position: { x: 7, y: 7},
       tileName: "player"
     }
   });

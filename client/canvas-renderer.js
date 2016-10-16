@@ -3,11 +3,13 @@
 import {
   getOffset,
   getMessage,
-  shouldRender
+  shouldRender,
+  backgroundTiles,
 } from "features/rendering/reducer";
 
 import {
-  getPositions
+  getPositions,
+  getCurrentMapDimensions
 } from "features/maps/reducer";
 
 import {
@@ -15,21 +17,18 @@ import {
   getTileForEntity
 } from "features/tilesets/reducer";
 
-const renderBackground = (context2d, dimensions) => {
+const renderBackdrop = (context2d, dimensions) => {
   const { sx, sy } = dimensions;
   context2d.fillRect(0, 0, sx, sy);
 };
 
-const renderDummyMapTiles = (context2d, state) => {
-  const { x: dx, y: dy } = getOffset(state);
-  for (let x = 1; x < 8; x++) {
-    for (let y = 1; y < 8; y++) {
-      try {
-        const coords = getTileParams(state, x - dx, y - dy, "grass");
-        context2d.drawImage(...coords);
-      } catch (err) {
-        console.error(`Couldn't draw image- error: ${err}`);
-      }
+const renderBackground = (context2d, state) => {
+  for (const [x, y, tile] of backgroundTiles(state)) {
+    try {
+      const coords = getTileParams(state, x, y, tile);
+      context2d.drawImage(...coords);
+    } catch (err) {
+      console.error(`Couldn't draw image- error: ${err}`);
     }
   }
 };
@@ -75,8 +74,8 @@ export default class CanvasRenderer {
   }
 
   render(state) {
-    renderBackground(this._context2d, this._getDimensions());
-    renderDummyMapTiles(this._context2d, state);
+    renderBackdrop(this._context2d, this._getDimensions());
+    renderBackground(this._context2d, state);
     renderEntities(this._context2d, state);
     renderMessage(this._context2d, state);
   }

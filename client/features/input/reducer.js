@@ -23,6 +23,8 @@ const QUIT_GAME = { command: "QUIT_GAME" };
 
 const DEBUG_IPC = { command: "DEBUG_IPC" };
 
+const TOGGLE_CAMERA_FREEZE = { command: "TOGGLE_CAMERA_FREEZE" };
+
 export const commandForKeySelector = (state, key) => {
   switch (state.input.mode) {
     case "inspect": {
@@ -48,7 +50,8 @@ const initialState = {
     "KeyU": MOVE_NORTHEAST,
     "KeyB": MOVE_SOUTHWEST,
     "KeyN": MOVE_SOUTHEAST,
-    "KeyD": DEBUG_IPC
+    "KeyD": DEBUG_IPC,
+    "KeyF": TOGGLE_CAMERA_FREEZE,
   },
   inspectModeKeymap: {
     "KeyA": SET_INPUT_MODE_NORMAL,
@@ -62,6 +65,13 @@ const initialState = {
     "KeyN": MOVE_CAMERA_SOUTHEAST
   }
 };
+
+export const setInputMode = (mode) => ({
+  type: "SET_INPUT_MODE",
+  payload: {
+    mode
+  }
+});
 
 export default (state = initialState, action) => {
   switch (action.type) {

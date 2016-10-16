@@ -2,45 +2,47 @@
 /* eslint max-len: [ "error", 105 ] no-shadow: ["error", { "allow": ["uuid"]}]*/
 
 import { map } from "lodash";
-import type { AppState, Action } from "root-reducer";
 
-type uuid = string;
-
-type EntityPosition = {
-  mapUuid: uuid,
-  x: number,
-  y: number
-};
-
-type Map = {
-  background: string,
-  dimensions: {
-    x: number,
-    y: number,
-  }
-};
-
-export type MapsState = {
-  currentMap: ?uuid,
-  maps: {
-    [key: uuid]: Map
-  },
-  registry: {
-    [key: uuid]: EntityPosition
-  }
-};
-
-const initialState : MapsState = {
+const initialState = {
   currentMap: null,
   maps:       {},
   registry:   {}
 };
 
-export const getPlayerPosition = (state: AppState) => state.maps.registry[state.player.playerUuid];
-export const getPositions = (state: AppState) => map(state.maps.registry, (pos, uuid) => [uuid, pos]);
+export const entityCanMoveTo = (state, uuid, { dx, dy }) => {
+  const { mapUuid, x: x0, y: y0 } = state.maps.registry[uuid];
+  const { dimensions: { x: sx, y: sy } } = state.maps.maps[mapUuid];
+  const [x, y] = [x0 + dx, y0 + dy];
+  if (x < 0 || x >= sx || y < 0 || y >= sy ) {
+    return false;
+  } else {
+    return true;
+  }
+};
 
-export default (state: MapsState = initialState, action: Action) : MapsState => {
+export const getCurrentMapDimensions = (state) => {
+  const currentMap = state.maps.maps[state.maps.currentMap];
+  return currentMap && currentMap.dimensions;
+};
+
+export const getPlayerPosition = (state) => state.maps.registry[state.player.playerUuid];
+export const getPositions = (state) => map(state.maps.registry, (pos, uuid) => [uuid, pos]);
+
+export default (state = initialState, action) => {
   switch (action.type) {
+    case "CREATE_MAP": {
+      const { uuid, background, dimensions } = action.payload;
+      return {
+        ...state,
+        currentMap: (state.currentMap || uuid),
+        maps: {
+          ...state.maps,
+          [uuid]: {
+            background, dimensions
+          }
+        }
+      };
+    }
     case "MOVE_ENTITY": {
       const { uuid, dx, dy } = action.payload;
       const entity = state.registry[uuid];
@@ -51,6 +53,7 @@ export default (state: MapsState = initialState, action: Action) : MapsState => 
           registry: {
             ...state.registry,
             [uuid]: {
+              ...entity,
               x: x0 + dx,
               y: y0 + dy
             }
@@ -63,6 +66,9 @@ export default (state: MapsState = initialState, action: Action) : MapsState => 
     case "SPAWN_ENTITY": {
       const { uuid, position } = action.payload;
       if (position) {
+        if(!position.mapUuid) {
+          position.mapUuid = state.currentMap;
+        }
         return {
           ...state,
           registry: {

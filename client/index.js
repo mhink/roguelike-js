@@ -14,6 +14,19 @@ document.addEventListener("DOMContentLoaded", () => {
   context2d.imageSmoothingEnabled = false;
 
   const store = configureStore({}, context2d);
+  store.dispatch({
+    type: "INIT_SCREEN_SIZE",
+    payload: {
+      tileSizePx: {
+        x: 32,
+        y: 32
+      },
+      screenSizePx: {
+        x: canvas.width,
+        y: canvas.height,
+      }
+    }
+  });
   window.$$store = store;
   window.$$renderer = new CanvasRenderer(store, context2d);
 });

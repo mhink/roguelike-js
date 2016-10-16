@@ -42,4 +42,18 @@ export const initTilesets = function* () {
     sx0:   8,
     sy0:   7
   } });
+
+  yield put({ type:    "REGISTER_TILE", payload: {
+    name:  "woodfloor",
+    image: floor,
+    sx0:   8,
+    sy0:   19
+  } });
+  yield put({ type:    "REGISTER_TILE", payload: {
+    name:  "woodfloor-dark",
+    image: floor,
+    sx0:   8,
+    sy0:   22
+  } });
+
 };

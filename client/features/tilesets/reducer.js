@@ -78,8 +78,8 @@ export const getTileForEntity = (state: AppState, uuid: string) => state.tileset
 export const getTileByName = (state: AppState, name: string) => state.tilesets.tiles[name];
 export const getImageByPath = (state: AppState, path: string) => state.tilesets.images[path];
 
-const TILE_HEIGHT_SCALING_FACTOR = 4;
-const TILE_WIDTH_SCALING_FACTOR = 4;
+const TILE_HEIGHT_SCALING_FACTOR = 2;
+const TILE_WIDTH_SCALING_FACTOR = 2;
 
 // eslint-disable-next-line max-params
 export const getTileParams = (state: AppState, dx0: number, dy0: number, name: string) => {
