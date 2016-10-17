@@ -25,8 +25,6 @@ const DEBUG_IPC = { command: "DEBUG_IPC" };
 
 const TOGGLE_CAMERA_FREEZE = { command: "TOGGLE_CAMERA_FREEZE" };
 
-const RUN_SIMULATOR = { command: "RUN_SIMULATOR" };
-
 export const shouldRunSimulation = (state) => (
   state.input.mode === "normal"
 );
@@ -57,7 +55,6 @@ const initialState = {
     "KeyN": MOVE_SOUTHEAST,
 
     "KeyA": SET_INPUT_MODE_INSPECT,
-    "KeyS": RUN_SIMULATOR,
     "KeyD": DEBUG_IPC,
     "KeyF": TOGGLE_CAMERA_FREEZE
   },

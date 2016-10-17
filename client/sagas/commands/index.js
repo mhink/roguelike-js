@@ -7,7 +7,6 @@ import quitGame from "./quit-game";
 import setInputMode from "./set-input-mode";
 import debugIpc from "./debug-ipc";
 import toggleCameraFreeze from "./toggle-camera-freeze";
-import runSimulator from "./run-simulator";
 
 const SAGA_FOR_COMMAND = {
   "MOVE_CAMERA":          moveCamera,
@@ -16,7 +15,6 @@ const SAGA_FOR_COMMAND = {
   "QUIT_GAME":            quitGame,
   "DEBUG_IPC":            debugIpc,
   "TOGGLE_CAMERA_FREEZE": toggleCameraFreeze,
-  "RUN_SIMULATOR":        runSimulator
 };
 
 export default function* ({ command, payload = {} }) {
