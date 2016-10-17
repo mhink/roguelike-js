@@ -27,6 +27,10 @@ const TOGGLE_CAMERA_FREEZE = { command: "TOGGLE_CAMERA_FREEZE" };
 
 const RUN_SIMULATOR = { command: "RUN_SIMULATOR" };
 
+export const shouldRunSimulation = (state) => (
+  state.input.mode === "normal"
+);
+
 export const commandForKeySelector = (state, key) => {
   switch (state.input.mode) {
     case "inspect": {

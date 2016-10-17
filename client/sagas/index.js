@@ -27,12 +27,34 @@ const initializeGame = function* () {
   yield put(registerImage(player, playerImage, { x: 16, y: 16 }));
   yield put(registerImage(floor, floorImage, { x: 16, y: 16 }));
   yield put(registerTile("player", { x: 0, y: 0 }, player));
+  yield put(registerTile("goblin", { x: 0, y: 13 }, player));
   yield put(batchRegisterTiles(floor, floorTiledefs));
   yield put(createMap("grass-night", 15, 15));
   yield put(spawnEntity({
+    actor: {
+      repeat:    false,
+      speed:     15,
+      eventType: "GREETER"
+    }
+  }));
+  yield put(spawnEntity({
     player:   true,
     position: { x: 7, y: 7 },
-    tileName: "player"
+    tileName: "player",
+    actor: {
+      repeat:    true,
+      speed:     10,
+      eventType: "PLAYER_INPUT"
+    }
+  }));
+  yield put(spawnEntity({
+    position: { x: 9, y: 9 },
+    tileName: "goblin",
+    actor: {
+      repeat:    true,
+      speed:     7,
+      eventType: "GOBLIN_AI"
+    }
   }));
 };
 
@@ -40,12 +62,11 @@ export default function* rootSaga(canvas) {
   const rkChan = yield rawKeyboardChannel(canvas);
   const ipcChan = yield ipcChannel("ipc-saga");
 
+  yield* initializeGame();
+
+  yield put({ type: "START_RENDERING" });
   yield [
     fork(takeEveryAsCommand, rkChan, runCommandSaga),
     fork(takeEveryIpc, ipcChan, logIpc)
   ];
-
-  yield* initializeGame();
-
-  yield put({ type: "START_RENDERING" });
 }
