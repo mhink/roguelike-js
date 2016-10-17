@@ -25,6 +25,8 @@ const DEBUG_IPC = { command: "DEBUG_IPC" };
 
 const TOGGLE_CAMERA_FREEZE = { command: "TOGGLE_CAMERA_FREEZE" };
 
+const RUN_SIMULATOR = { command: "RUN_SIMULATOR" };
+
 export const commandForKeySelector = (state, key) => {
   switch (state.input.mode) {
     case "inspect": {
@@ -40,7 +42,6 @@ export const commandForKeySelector = (state, key) => {
 const initialState = {
   mode:             "normal",
   normalModeKeymap: {
-    "KeyA": SET_INPUT_MODE_INSPECT,
     "KeyQ": QUIT_GAME,
     "KeyH": MOVE_WEST,
     "KeyJ": MOVE_SOUTH,
@@ -50,6 +51,9 @@ const initialState = {
     "KeyU": MOVE_NORTHEAST,
     "KeyB": MOVE_SOUTHWEST,
     "KeyN": MOVE_SOUTHEAST,
+
+    "KeyA": SET_INPUT_MODE_INSPECT,
+    "KeyS": RUN_SIMULATOR,
     "KeyD": DEBUG_IPC,
     "KeyF": TOGGLE_CAMERA_FREEZE
   },

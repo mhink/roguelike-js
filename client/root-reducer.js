@@ -6,6 +6,7 @@ import tilesets from "features/tilesets";
 import maps from "features/maps";
 import player from "features/player";
 import rendering from "features/rendering";
+import simulator from "features/simulator";
 
 import type { TilesetsState } from "features/tilesets";
 import type { MapsState } from "features/maps";
@@ -16,6 +17,7 @@ export type AppState = {
   maps: MapsState,
   player: Object,
   rendering: Object,
+  simulator: Object
 };
 
 export type Action = {
@@ -29,4 +31,5 @@ export default combineReducers({
   maps,
   player,
   rendering,
+  simulator
 });
