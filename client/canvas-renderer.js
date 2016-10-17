@@ -4,12 +4,11 @@ import {
   getOffset,
   getMessage,
   shouldRender,
-  backgroundTiles,
+  backgroundTiles
 } from "features/rendering";
 
 import {
-  getPositions,
-  getCurrentMapDimensions
+  getPositions
 } from "features/maps";
 
 import {

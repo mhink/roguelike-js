@@ -1,9 +1,10 @@
+/* eslint no-shadow: ["error", { "allow": ["ipcChannel"]}] */
 import { ipcRenderer } from "electron";
 import { eventChannel } from "redux-saga";
-import { fork, put, call, take, cancelled } from "redux-saga/effects";
+import { fork, call, take, cancelled } from "redux-saga/effects";
 
 const subscribeToIpc = (ipcChannelName) => (emit) => {
-  const ipcListener = (event, payload, ...restArgs) => {
+  const ipcListener = (event, payload) => {
     emit({
       event,
       payload
@@ -19,7 +20,7 @@ const subscribeToIpc = (ipcChannelName) => (emit) => {
 
 export const ipcChannel = (ipcChannelName) => {
   return eventChannel(subscribeToIpc(ipcChannelName));
-}
+};
 
 export const putIpc = (channel, payload) => {
   return call([ipcRenderer, ipcRenderer.send], channel, payload);

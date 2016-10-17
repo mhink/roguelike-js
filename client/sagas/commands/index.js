@@ -1,4 +1,4 @@
-import { take, call } from "redux-saga/effects";
+import { call } from "redux-saga/effects";
 
 import clearMessage from "./clear-message";
 import moveCamera from "./move-camera";
@@ -9,11 +9,11 @@ import debugIpc from "./debug-ipc";
 import toggleCameraFreeze from "./toggle-camera-freeze";
 
 const SAGA_FOR_COMMAND = {
-  "MOVE_CAMERA":    moveCamera,
-  "MOVE_PLAYER":    movePlayer,
-  "SET_INPUT_MODE": setInputMode,
-  "QUIT_GAME":      quitGame,
-  "DEBUG_IPC":      debugIpc,
+  "MOVE_CAMERA":          moveCamera,
+  "MOVE_PLAYER":          movePlayer,
+  "SET_INPUT_MODE":       setInputMode,
+  "QUIT_GAME":            quitGame,
+  "DEBUG_IPC":            debugIpc,
   "TOGGLE_CAMERA_FREEZE": toggleCameraFreeze
 };
 

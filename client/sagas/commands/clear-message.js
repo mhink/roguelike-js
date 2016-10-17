@@ -5,4 +5,4 @@ export default function* () {
   if (yield select(getMessage)) {
     yield put({ type: "CLEAR_MESSAGE" });
   }
-};
+}

@@ -14,7 +14,7 @@ export const entityCanMoveTo = (state, uuid, { dx, dy }) => {
   const { mapUuid, x: x0, y: y0 } = state.maps.registry[uuid];
   const { dimensions: { x: sx, y: sy } } = state.maps.maps[mapUuid];
   const [x, y] = [x0 + dx, y0 + dy];
-  if (x < 0 || x >= sx || y < 0 || y >= sy ) {
+  if (x < 0 || x >= sx || y < 0 || y >= sy) {
     return false;
   } else {
     return true;
@@ -30,9 +30,9 @@ export const getPlayerPosition = (state) => state.maps.registry[state.player.pla
 export const getPositions = (state) => map(state.maps.registry, (pos, uuid) => [uuid, pos]);
 
 export const createMap = (background, x, y) => ({
-  type: "CREATE_MAP",
+  type:    "CREATE_MAP",
   payload: {
-    uuid: uuid(),
+    uuid:       uuid(),
     background,
     dimensions: {
       x, y
@@ -40,14 +40,15 @@ export const createMap = (background, x, y) => ({
   }
 });
 
+/* eslint complexity: ["warn"] max-statements: ["warn"] */
 export default (state = initialState, action) => {
   switch (action.type) {
     case "CREATE_MAP": {
       const { uuid, background, dimensions } = action.payload;
       return {
         ...state,
-        currentMap: (state.currentMap || uuid),
-        maps: {
+        currentMap: state.currentMap || uuid,
+        maps:       {
           ...state.maps,
           [uuid]: {
             background, dimensions
@@ -78,7 +79,7 @@ export default (state = initialState, action) => {
     case "SPAWN_ENTITY": {
       const { uuid, position } = action.payload;
       if (position) {
-        if(!position.mapUuid) {
+        if (!position.mapUuid) {
           position.mapUuid = state.currentMap;
         }
         return {

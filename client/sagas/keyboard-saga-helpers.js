@@ -1,5 +1,6 @@
+/* eslint no-shadow: ["error", { "allow": ["rawKeyboardChannel"] }] */
 import { eventChannel } from "redux-saga";
-import { fork, cancelled, take, select, put } from "redux-saga/effects";
+import { fork, cancelled, take, select } from "redux-saga/effects";
 import { commandForKeySelector } from "features/input";
 
 const subscribeToKeyboard = (emitter) => {
@@ -32,4 +33,4 @@ export const takeEveryAsCommand = function* (rawKeyboardChannel, saga, ...args) 
     }
   });
   return task;
-}
+};

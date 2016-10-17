@@ -20,4 +20,4 @@ export default function* ({ mode }) {
     const { x, y } = yield select(getPlayerPosition);
     yield put(centerViewport(x, y));
   }
-};
+}

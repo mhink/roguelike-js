@@ -2,9 +2,9 @@ import type { AppState } from "root-reducer";
 
 const initialState = {
   isCameraFrozen: false,
-  ready:    false,
-  message:  null,
-  midpoint: {
+  ready:          false,
+  message:        null,
+  midpoint:       {
     x: 0,
     y: 0
   },
@@ -27,15 +27,15 @@ export const backgroundTiles = function* (state: AppState) {
 
   const x0 = -dx < 0 ? 0 : -dx;
   const y0 = -dy < 0 ? 0 : -dy;
-  const x1 = (sx - dx) >= ssx ? ssx : (sx - dx);
-  const y1 = (sy - dy) >= ssy ? ssy : (sy - dy);
+  const x1 = sx - dx >= ssx ? ssx : sx - dx;
+  const y1 = sy - dy >= ssy ? ssy : sy - dy;
 
   for (let x = x0; x < x1; x++) {
     for (let y = y0; y < y1; y++) {
       yield [x, y, background];
     }
   }
-}
+};
 export const getScreenSize = (state: AppState) => state.rendering.screenSize;
 export const shouldRender = (state: AppState) => state.rendering.ready;
 export const getMessage = (state) => state.rendering.message;
@@ -44,26 +44,27 @@ export const getMidpoint = (state) => state.rendering.midpoint;
 export const getCameraFrozen = (state) => state.rendering.isCameraFrozen;
 
 export const centerViewport = (x, y) => ({
-  type: "CENTER_VIEWPORT",
+  type:    "CENTER_VIEWPORT",
   payload: {
     x, y
   }
 });
 
 export const setCameraFrozen = (isCameraFrozen) => ({
-  type: "SET_CAMERA_FROZEN",
+  type:    "SET_CAMERA_FROZEN",
   payload: {
     isCameraFrozen
   }
 });
 
 export const setScreenMessage = (message) => ({
-  type: "SET_SCREEN_MESSAGE",
+  type:    "SET_SCREEN_MESSAGE",
   payload: {
     message
   }
 });
 
+/* eslint complexity: ["warn"] max-statements: ["warn"] */
 export default (state = initialState, action) => {
   switch (action.type) {
     case "SET_CAMERA_FROZEN": {
@@ -74,29 +75,30 @@ export default (state = initialState, action) => {
       };
     }
     case "INIT_SCREEN_SIZE": {
-      const { 
-        screenSizePx: { 
-          x: psx, 
-          y: psy 
+      const {
+        screenSizePx: {
+          x: psx,
+          y: psy
         },
         tileSizePx: {
           x: tsx,
-          y: tsy,
+          y: tsy
         }
       } = action.payload;
       const [sx, sy] = [Math.ceil(psx / tsx), Math.ceil(psy / tsy)];
+      // eslint-disable-next-line no-magic-numbers
       const [mx, my] = [Math.floor(sx / 2), Math.floor(sy / 2)];
       return {
         ...state,
         screenSize: {
           x: sx,
-          y: sy,
+          y: sy
         },
         midpoint: {
           x: mx,
-          y: my,
+          y: my
         }
-      }
+      };
     }
     case "START_RENDERING": {
       return {
@@ -128,8 +130,7 @@ export default (state = initialState, action) => {
             y: y0 + dy
           }
         };
-      }
-      else {
+      } else {
         return state;
       }
     }
@@ -146,7 +147,7 @@ export default (state = initialState, action) => {
     }
     case "SPAWN_ENTITY": {
       const { player, position } = action.payload;
-      if(player && position) {
+      if (player && position) {
         const { x: cx, y: cy } = position;
         const { x: mx, y: my } = state.midpoint;
         return {

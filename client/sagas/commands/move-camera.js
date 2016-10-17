@@ -4,4 +4,4 @@ export default function* ({ dx, dy }) {
   yield put({ type:    "ADJUST_VIEWPORT", payload: {
     dx, dy
   } });
-};
+}

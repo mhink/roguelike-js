@@ -51,7 +51,7 @@ const initialState = {
     "KeyB": MOVE_SOUTHWEST,
     "KeyN": MOVE_SOUTHEAST,
     "KeyD": DEBUG_IPC,
-    "KeyF": TOGGLE_CAMERA_FREEZE,
+    "KeyF": TOGGLE_CAMERA_FREEZE
   },
   inspectModeKeymap: {
     "KeyA": SET_INPUT_MODE_NORMAL,
@@ -67,7 +67,7 @@ const initialState = {
 };
 
 export const setInputMode = (mode) => ({
-  type: "SET_INPUT_MODE",
+  type:    "SET_INPUT_MODE",
   payload: {
     mode
   }

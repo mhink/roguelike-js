@@ -15,7 +15,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const store = configureStore({}, canvas);
   store.dispatch({
-    type: "INIT_SCREEN_SIZE",
+    type:    "INIT_SCREEN_SIZE",
     payload: {
       tileSizePx: {
         x: 32,
@@ -23,7 +23,7 @@ document.addEventListener("DOMContentLoaded", () => {
       },
       screenSizePx: {
         x: canvas.width,
-        y: canvas.height,
+        y: canvas.height
       }
     }
   });

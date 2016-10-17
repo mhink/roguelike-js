@@ -15,11 +15,11 @@ export default function* ({ dx, dy }) {
     yield put({
       type:    "MOVE_ENTITY",
       payload: {
-        uuid, 
-        dx, 
+        uuid,
+        dx,
         dy,
-        cameraTracking: true,
+        cameraTracking: true
       }
     });
   }
-};
+}

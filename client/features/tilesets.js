@@ -1,4 +1,5 @@
 // @flow
+/* eslint-disable max-statements */
 
 import type { AppState, Action } from "root-reducer";
 
@@ -30,8 +31,8 @@ const initialState = {
   registry: {}
 };
 
-export const registerImage = (path, img, sWidth, sHeight) => ({
-  type: "REGISTER_IMAGE",
+export const registerImage = (path, img, { x: sWidth, y: sHeight }) => ({
+  type:    "REGISTER_IMAGE",
   payload: {
     path,
     img,
@@ -41,15 +42,15 @@ export const registerImage = (path, img, sWidth, sHeight) => ({
 });
 
 export const batchRegisterTiles = (image, tiles) => ({
-  type: "BATCH_REGISTER_TILES",
+  type:    "BATCH_REGISTER_TILES",
   payload: {
     image,
     tiles
   }
 });
 
-export const registerTile = (name, sx0, sy0, image) => ({
-  type: "REGISTER_TILE",
+export const registerTile = (name, { x: sx0, y: sy0 }, image) => ({
+  type:    "REGISTER_TILE",
   payload: {
     name,
     image,
@@ -78,8 +79,8 @@ export default (state: TilesetsState = initialState, action: Action) => {
     }
     case "BATCH_REGISTER_TILES": {
       const { image, tiles } = action.payload;
-      const newTiles = {...state.tiles};
-      for(const tile of tiles) {
+      const newTiles = { ...state.tiles };
+      for (const tile of tiles) {
         const [name, sx0, sy0] = tile;
         newTiles[name] = { image, sx0, sy0 };
       }
