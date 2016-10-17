@@ -21,6 +21,21 @@ function* logIpc(...args) {
   console.log(args);
 }
 
+function* initializeGame() {
+  const playerImage = yield call(loadImage, player);
+  const floorImage = yield call(loadImage, floor);
+  yield put(registerImage(player, playerImage, 16, 16));
+  yield put(registerImage(floor, floorImage, 16, 16));
+  yield put(registerTile("player", 0, 0, player));
+  yield put(batchRegisterTiles(floor, floorTiledefs));
+  yield put(createMap("grass-night", 15, 15));
+  yield put(spawnEntity({
+    player:   true,
+    position: { x: 7, y: 7},
+    tileName: "player"
+  }));
+}
+
 export default function* rootSaga(canvas) {
   const rkChan = yield rawKeyboardChannel(canvas);
   const ipcChan = yield ipcChannel("ipc-saga");
@@ -30,20 +45,7 @@ export default function* rootSaga(canvas) {
     fork(takeEveryIpc, ipcChan, logIpc),
   ];
 
-  const playerImage = yield call(loadImage, player);
-  const floorImage = yield call(loadImage, floor);
-
-  yield put(registerImage(player, playerImage, 16, 16));
-  yield put(registerImage(floor, floorImage, 16, 16));
-  yield put(registerTile("player", 0, 0, player));
-  yield put(batchRegisterTiles(floor, floorTiledefs));
-  yield put(createMap("wood-day", 15, 15));
-  yield put(createMap("grass", 4, 4));
-  yield put(spawnEntity({
-    player:   true,
-    position: { x: 7, y: 7},
-    tileName: "player"
-  }));
+  yield* initializeGame();
 
   yield put({ type: "START_RENDERING" });
 }
