@@ -4,6 +4,7 @@ import { put, fork, call } from "redux-saga/effects";
 import { rawKeyboardChannel, takeEveryAsCommand } from "keyboard-saga-helpers";
 import { ipcChannel, takeEveryIpc } from "ipc-saga-helpers";
 import runCommandSaga from "sagas/commands";
+import runEventSaga from "sagas/events";
 import { spawnEntity } from "spawn-entity-action";
 import { createMap } from "features/maps";
 import {
@@ -30,13 +31,6 @@ const initializeGame = function* () {
   yield put(registerTile("goblin", { x: 0, y: 13 }, player));
   yield put(batchRegisterTiles(floor, floorTiledefs));
   yield put(createMap("grass-night", 15, 15));
-  yield put(spawnEntity({
-    actor: {
-      repeat:    false,
-      speed:     15,
-      eventType: "GREETER"
-    }
-  }));
   yield put(spawnEntity({
     player:   true,
     position: { x: 7, y: 7 },
@@ -66,7 +60,7 @@ export default function* rootSaga(canvas) {
 
   yield put({ type: "START_RENDERING" });
   yield [
-    fork(takeEveryAsCommand, rkChan, runCommandSaga),
+    fork(takeEveryAsCommand, rkChan, runCommandSaga, runEventSaga),
     fork(takeEveryIpc, ipcChan, logIpc)
   ];
 }
