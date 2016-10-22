@@ -40,7 +40,6 @@ const renderEntities = (context2d, state) => {
     try {
       const { tileName } = getTileForEntity(state, uuid);
       const coords = getTileParams(state, x - dx, y - dy, tileName);
-      console.log(coords);
       context2d.drawImage(...coords);
     } catch (err) {
       console.error(`Couldn't draw image- error: ${err}`);
