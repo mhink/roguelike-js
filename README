@@ -1,0 +1,10 @@
+# roguelike-js
+
+A roguelike, built with Electron, Redux, redux-saga, and HTML5 Canvas.
+
+## Attributions
+Tileset: "DawnLike v1.81"[^n] by Andrew Rios[^n] is licensed under CC BY-SA 3.0[^n]
+
+[^n]: http://opengameart.org/content/dawnlike-16x16-universal-rogue-like-tileset-v181
+[^n]: http://dragondeplatino.daportfolio.com/
+[^n]: https://creativecommons.org/licenses/by-sa/3.0/
