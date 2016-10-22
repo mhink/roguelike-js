@@ -3,8 +3,8 @@ import { put, fork, call } from "redux-saga/effects";
 
 import { rawKeyboardChannel, takeEveryAsCommand } from "keyboard-saga-helpers";
 import { ipcChannel, takeEveryIpc } from "ipc-saga-helpers";
-import runCommandSaga from "sagas/commands";
-import runEventSaga from "sagas/events";
+import runCommandSaga from "./run-command";
+import runEventSaga from "./run-events";
 import { spawnEntity } from "spawn-entity-action";
 import { createMap } from "features/maps";
 import {
