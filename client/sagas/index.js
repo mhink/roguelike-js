@@ -30,10 +30,10 @@ const initializeGame = function* () {
   yield put(registerTile("player", { x: 0, y: 0 }, player));
   yield put(registerTile("goblin", { x: 0, y: 13 }, player));
   yield put(batchRegisterTiles(floor, floorTiledefs));
-  yield put(createMap("grass-night", 4, 4));
+  yield put(createMap("grass-night", 17, 17));
   yield put(spawnEntity({
     player:   true,
-    position: { x: 0, y: 0 },
+    position: { x: 8, y: 8 },
     tileName: "player",
     actor: {
       repeat:    true,
