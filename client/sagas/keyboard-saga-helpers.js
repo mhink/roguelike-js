@@ -22,21 +22,18 @@ export const rawKeyboardChannel = () => eventChannel(subscribeToKeyboard);
 export const takeEveryAsCommand = function* (rawKeyboardChannel, commandSaga, eventSaga, ...args) {
   const task = yield fork(function* () {
     try {
-      input_loop:
       while (true) {
         const { keyboardEvent } = yield take(rawKeyboardChannel);
         const command = yield select(commandForKeySelector, keyboardEvent.code);
         if (command) {
-          yield fork(commandSaga, ...args.concat(command));
-          const shouldRun = yield select(shouldRunSimulation);
+          const shouldRun = yield call(commandSaga, ...args.concat(command));
           if (!shouldRun) {
-            continue input_loop;
+            continue;
           }
         } else {
           console.warn(`No command is mapped to ${keyboardEvent}!`);
-          continue input_loop;
+          continue;
         }
-
         yield call(eventSaga);
       }
     } finally {

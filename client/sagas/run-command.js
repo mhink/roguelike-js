@@ -10,9 +10,10 @@ export default function* ({ command, payload = {} }) {
 
   const commandSaga = SAGA_FOR_COMMAND[command];
   if (commandSaga) {
-    yield call(commandSaga, payload);
+    return yield call(commandSaga, payload);
   } else {
     console.warn(`commandSystem received a command with no corresponding saga: ${command}`);
     console.warn("Payload was:", payload);
+    return false;
   }
 }

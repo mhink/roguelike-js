@@ -7,26 +7,29 @@ import {
   getSimulationComponent
 } from "features/simulator";
 
+// TODO: unfuck this control flow
 export default function* () {
-  while (true) {
+  for(let i = 0; i < 10; i++) {
     const currentEvent = yield select(getCurrentEvent);
-    if (!currentEvent) {
-      console.warn("No event is next!");
-      break;
-    }
+
+    if (!currentEvent)
+      return;
+
     const { uuid } = currentEvent;
     const event = yield select(getSimulationComponent, uuid);
 
     yield put(runClock());
 
-    if (event.eventType === "PLAYER_INPUT") {
-      break;
-    }
+    if (!event) 
+      return;
+
+    if (event.eventType === "PLAYER_INPUT") 
+      return;
 
     const eventSaga = SAGA_FOR_EVENT[event.eventType];
+
     if (!eventSaga) {
       console.warn(`No handler for eventType (${event.eventType}), skipping forward`);
-      continue;
     }
 
     yield call(eventSaga, uuid);

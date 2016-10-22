@@ -1,4 +1,4 @@
-import { findIndex } from "lodash";
+import { reject, findIndex } from "lodash";
 
 const initialState = {
   currentTime:  0,
@@ -12,6 +12,20 @@ export const runClock = () => ({ type: "RUN_CLOCK" });
 
 export default (state = initialState, action) => {
   switch (action.type) {
+    case "REAP_ENTITY": {
+      const { uuid } = action.payload;
+      const nextRegistry = { ...state.registry };
+      delete nextRegistry[uuid];
+      const nextEventQueue = reject(state.eventQueue, (event) => {
+        event.uuid === uuid
+      });
+      return {
+        ...state,
+        eventQueue: nextEventQueue,
+        registry: nextRegistry
+      }
+    }
+
     case "SPAWN_ENTITY": {
       const { uuid, actor } = action.payload;
 
@@ -48,9 +62,7 @@ export default (state = initialState, action) => {
         registry: {
           ...state.registry,
           [uuid]: {
-            eventType,
-            speed,
-            repeat
+            ...actor
           }
         }
       };
@@ -69,6 +81,14 @@ export default (state = initialState, action) => {
       // slice the old event out of the queue
       let nextEventQueue = eventQueue.slice(1);
       let nextRegistry = { ...registry };
+
+      if(!registry[uuid]) {
+        return {
+          ...state,
+          eventQueue: nextEventQueue,
+          registry: nextRegistry
+        };
+      }
 
       const { repeat, speed, eventType } = registry[uuid];
 

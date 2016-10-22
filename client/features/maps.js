@@ -1,7 +1,7 @@
 // @flow
 /* eslint max-len: [ "error", 105 ] no-shadow: ["error", { "allow": ["uuid"]}]*/
 
-import { map } from "lodash";
+import { findKey, map } from "lodash";
 import { v4 as uuid } from "uuid";
 
 const initialState = {
@@ -21,6 +21,7 @@ export const entityCanMoveTo = (state, uuid, { dx, dy }) => {
   }
 };
 
+export const getCurrentMap = (state) => state.maps.currentMap;
 export const getCurrentMapDimensions = (state) => {
   const currentMap = state.maps.maps[state.maps.currentMap];
   return currentMap && currentMap.dimensions;
@@ -28,6 +29,18 @@ export const getCurrentMapDimensions = (state) => {
 
 export const getPlayerPosition = (state) => state.maps.registry[state.player.playerUuid];
 export const getPositions = (state) => map(state.maps.registry, (pos, uuid) => [uuid, pos]);
+export const getPositionForEntity = (state, uuid) => state.maps.registry[uuid];
+
+// TODO: make this more efficient!
+export const getEntityAtPosition = (state, x, y, mapUuid) => {
+  return findKey(state.maps.registry, (pos, uuid) => {
+    return (
+        pos.mapUuid === mapUuid
+    &&  pos.x === x
+    &&  pos.y === y
+    );
+  })
+};
 
 export const createMap = (background, x, y) => ({
   type:    "CREATE_MAP",
@@ -76,6 +89,16 @@ export default (state = initialState, action) => {
         return state;
       }
     }
+    case "REAP_ENTITY": {
+      const { uuid } = action.payload;
+      const nextRegistry = { ...state.registry };
+      delete nextRegistry[uuid];
+      return {
+        ...state,
+        registry: nextRegistry
+      }
+    }
+
     case "SPAWN_ENTITY": {
       const { uuid, position } = action.payload;
       if (position) {

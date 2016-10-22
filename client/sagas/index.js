@@ -39,15 +39,25 @@ const initializeGame = function* () {
       repeat:    true,
       speed:     10,
       eventType: "PLAYER_INPUT"
+    },
+    combat: {
+      hp: 10,
+      maxHp: 10,
+      atk: 5
     }
   }));
   yield put(spawnEntity({
-    position: { x: 9, y: 9 },
+    position: { x: 7, y: 8 },
     tileName: "goblin",
     actor: {
       repeat:    true,
       speed:     7,
       eventType: "GOBLIN_AI"
+    },
+    combat: {
+      hp: 5,
+      maxHp: 10,
+      atk: 2
     }
   }));
 };

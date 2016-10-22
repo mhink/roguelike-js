@@ -23,4 +23,6 @@ export default function* () {
     yield put(centerViewport(x, y));
     yield put(setScreenMessage("Unfroze camera position."));
   }
+
+  return false;
 }

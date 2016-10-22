@@ -61,6 +61,16 @@ export const registerTile = (name, { x: sx0, y: sy0 }, image) => ({
 
 export default (state: TilesetsState = initialState, action: Action) => {
   switch (action.type) {
+    case "REAP_ENTITY": {
+      const { uuid } = action.payload;
+      const nextRegistry = { ...state.registry };
+      delete nextRegistry[uuid];
+      return {
+        ...state,
+        registry: nextRegistry
+      }
+    }
+
     case "SPAWN_ENTITY": {
       const { uuid, tileName } = action.payload;
       if (tileName) {
