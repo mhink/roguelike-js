@@ -14,6 +14,7 @@ import {
 } from "features/tilesets";
 import player from "res/Player0.png";
 import floor from "res/Floor.png";
+import playerTiledefs from "res/Player0.tiledefs.js";
 import floorTiledefs from "res/Floor.tiledefs.js";
 import loadImage from "./load-image-promise.js";
 
@@ -27,14 +28,13 @@ const initializeGame = function* () {
   const floorImage = yield call(loadImage, floor);
   yield put(registerImage(player, playerImage, { x: 16, y: 16 }));
   yield put(registerImage(floor, floorImage, { x: 16, y: 16 }));
-  yield put(registerTile("player", { x: 0, y: 0 }, player));
-  yield put(registerTile("goblin", { x: 0, y: 13 }, player));
+  yield put(batchRegisterTiles(player, playerTiledefs));
   yield put(batchRegisterTiles(floor, floorTiledefs));
   yield put(createMap("grass-night", 17, 17));
   yield put(spawnEntity({
     player:   true,
     position: { x: 8, y: 8 },
-    tileName: "player",
+    tileName: "dwarf",
     actor: {
       repeat:    true,
       speed:     10,
@@ -48,7 +48,7 @@ const initializeGame = function* () {
   }));
   yield put(spawnEntity({
     position: { x: 1, y: 1 },
-    tileName: "goblin",
+    tileName: "armour_goblin",
     actor: {
       repeat:    true,
       speed:     7,
