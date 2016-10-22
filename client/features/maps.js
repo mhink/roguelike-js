@@ -16,9 +16,12 @@ export const entityCanMoveTo = (state, uuid, { dx, dy }) => {
   const [x, y] = [x0 + dx, y0 + dy];
   if (x < 0 || x >= sx || y < 0 || y >= sy) {
     return false;
-  } else {
+  } else if (getEntityAtPosition(state, x, y, mapUuid)) {
+    return false;
+  } else { 
     return true;
   }
+
 };
 
 export const getCurrentMap = (state) => state.maps.currentMap;

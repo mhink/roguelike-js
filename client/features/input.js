@@ -26,6 +26,7 @@ const DEBUG_IPC = { command: "DEBUG_IPC" };
 const TOGGLE_CAMERA_FREEZE = { command: "TOGGLE_CAMERA_FREEZE" };
 
 const SPAWN_GOBLIN = { command: "SPAWN_GOBLIN" };
+const DELAY = { command: "DELAY" };
 
 export const commandForKeySelector = (state, key) => {
   switch (state.input.mode) {
@@ -56,6 +57,7 @@ const initialState = {
     "KeyD": DEBUG_IPC,
     "KeyF": TOGGLE_CAMERA_FREEZE,
     "KeyG": SPAWN_GOBLIN,
+    "Period": DELAY,
   },
   inspectModeKeymap: {
     "KeyA": SET_INPUT_MODE_NORMAL,

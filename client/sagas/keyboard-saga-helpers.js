@@ -31,7 +31,7 @@ export const takeEveryAsCommand = function* (rawKeyboardChannel, commandSaga, ev
             continue;
           }
         } else {
-          console.warn(`No command is mapped to ${keyboardEvent}!`);
+          console.warn(`No command is mapped to ${keyboardEvent.code}!`);
           continue;
         }
         yield call(eventSaga);
