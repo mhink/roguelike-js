@@ -19,28 +19,20 @@ const subscribeToKeyboard = (emitter) => {
 };
 
 export const rawKeyboardChannel = () => eventChannel(subscribeToKeyboard);
-export const takeEveryAsCommand = function* (rawKeyboardChannel, commandSaga, eventSaga, ...args) {
-  const task = yield fork(function* () {
-    try {
-      while (true) {
-        const { keyboardEvent } = yield take(rawKeyboardChannel);
-        const command = yield select(commandForKeySelector, keyboardEvent.code);
-        if (command) {
-          const shouldRun = yield call(commandSaga, ...args.concat(command));
-          if (!shouldRun) {
-            continue;
-          }
-        } else {
-          console.warn(`No command is mapped to ${keyboardEvent.code}!`);
-          continue;
-        }
-        yield call(eventSaga);
-      }
-    } finally {
-      if (yield cancelled()) {
-        rawKeyboardChannel.close();
-      }
+
+export const takeAsCommand = function* (rawKeyboardChannel) {
+  try {
+    const { keyboardEvent } = yield take(rawKeyboardChannel);
+    const command = yield select(commandForKeySelector, keyboardEvent.code);
+    if (command) {
+      return command;
+    } else {
+      console.warn(`No command is mapped to ${keyboardEvent.code}!`);
+      return;
     }
-  });
-  return task;
+  } finally {
+    if (yield cancelled()) {
+      rawKeyboardChannel.close();
+    }
+  }
 };
