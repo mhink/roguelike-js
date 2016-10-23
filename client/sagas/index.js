@@ -6,6 +6,10 @@ import {
   takeAsCommand
 } from "keyboard-saga-helpers";
 
+import {
+  mouseChannel
+} from "mouse-saga-helpers";
+
 import { 
   ipcChannel, 
   takeEveryIpc 
