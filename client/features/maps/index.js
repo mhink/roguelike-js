@@ -4,10 +4,9 @@
 import entityReducer, {
   updateEntity
 } from "util/entity-reducer";
-import { v4 as uuid } from "uuid";
 
-export * from "./maps/selectors";
-export * from "./maps/actions";
+export * from "./selectors";
+export * from "./actions";
 
 const initialState = {
   currentMap: null,
