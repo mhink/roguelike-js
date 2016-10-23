@@ -2,20 +2,12 @@ import type { AppState } from "root-reducer";
 
 const initialState = {
   isCameraFrozen: false,
-  ready:          false,
-  message:        null,
-  midpoint:       {
-    x: 0,
-    y: 0
-  },
-  screenSize: {
-    x: 0,
-    y: 0
-  },
-  offset: {
-    x: 0,
-    y: 0
-  }
+
+  ready:      false,
+  message:    null,
+  midpoint:   { x: 0, y: 0 },
+  screenSize: { x: 0, y: 0 },
+  offset:     { x: 0, y: 0 }
 };
 
 export const backgroundTiles = function* (state: AppState) {
@@ -36,6 +28,8 @@ export const backgroundTiles = function* (state: AppState) {
     }
   }
 };
+export const getScreenSizePx = (state: AppState) => state.rendering.screenSizePx;
+export const getTileSizePx = (state: AppState) => state.rendering.tileSizePx;
 export const getScreenSize = (state: AppState) => state.rendering.screenSize;
 export const shouldRender = (state: AppState) => state.rendering.ready;
 export const getMessage = (state) => state.rendering.message;
@@ -97,6 +91,14 @@ export default (state = initialState, action) => {
         midpoint: {
           x: mx,
           y: my
+        },
+        screenSizePx: {
+          x: psx,
+          y: psy
+        },
+        tileSizePx: {
+          x: tsx,
+          y: tsy
         }
       };
     }

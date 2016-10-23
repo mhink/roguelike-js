@@ -4,7 +4,9 @@ import {
   getOffset,
   getMessage,
   shouldRender,
-  backgroundTiles
+  backgroundTiles,
+  getTileSizePx,
+  getScreenSizePx,
 } from "features/rendering";
 
 import {
@@ -16,10 +18,10 @@ import {
   getTileForEntity
 } from "features/tilesets";
 
-const drawTile = (context2d, state, tileName, dPos, screenTileSize) => {
+const drawTile = (context2d, state, tileName, dPos) => {
   try {
     const { x: dtx, y: dty } = dPos;
-    const { x: dWidth, y: dHeight } = screenTileSize;
+    const { x: dWidth, y: dHeight } = getTileSizePx(state);
     const { img, sx, sy, sWidth, sHeight } = getTileParams(state, tileName);
     const [dx, dy] = [dtx * dWidth, dty * dHeight];
 
@@ -35,25 +37,25 @@ const drawTile = (context2d, state, tileName, dPos, screenTileSize) => {
   }
 };
 
-const renderBackdrop = (context2d, dimensions) => {
-  const { sx, sy } = dimensions;
+const renderBackdrop = (context2d, state) => {
+  const { x: sx, x: sy } = getScreenSizePx(state);
   context2d.fillRect(0, 0, sx, sy);
 };
 
-const renderBackground = (context2d, state, screenTileSize) => {
+const renderBackground = (context2d, state) => {
   for (const { tileName, ...dPos } of backgroundTiles(state)) {
-    drawTile(context2d, state, tileName, dPos, screenTileSize);
+    drawTile(context2d, state, tileName, dPos);
   }
 };
 
-const renderEntities = (context2d, state, screenTileSize) => {
+const renderEntities = (context2d, state) => {
   const positions = getPositions(state);
   const { x: dx, y: dy } = getOffset(state);
 
   for (const [uuid, { x: x0, y: y0 }] of positions) {
     const { name: tileName } = getTileForEntity(state, uuid);
     const dPos = { x: x0 - dx, y: y0 - dy };
-    drawTile(context2d, state, tileName, dPos, screenTileSize);
+    drawTile(context2d, state, tileName, dPos);
   }
 };
 
@@ -73,7 +75,6 @@ export default class CanvasRenderer {
     this._context2d = context2d;
     this._store = store;
     this._unsubscribe = store.subscribe(() => this.handleUpdate());
-    this._tileDimensions = tileDimensions;
   }
 
   handleUpdate() {
@@ -84,16 +85,9 @@ export default class CanvasRenderer {
   }
 
   render(state) {
-    renderBackdrop(this._context2d, this._getDimensions());
-    renderBackground(this._context2d, state, this._tileDimensions);
-    renderEntities(this._context2d, state, this._tileDimensions);
+    renderBackdrop(this._context2d, state);
+    renderBackground(this._context2d, state);
+    renderEntities(this._context2d, state);
     renderMessage(this._context2d, state);
-  }
-
-  _getDimensions() {
-    return {
-      sx: this._context2d.canvas.clientWidth,
-      sy: this._context2d.canvas.clientHeight
-    };
   }
 }
