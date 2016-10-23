@@ -1,4 +1,4 @@
-import { toPairs, findKey, map, select } from "lodash";
+import { toPairs, findKey, map, filter } from "lodash";
 
 export const entityCanMoveTo = (state, uuid, { dx, dy }) => {
   const { mapUuid, x: x0, y: y0 } = state.maps.registry[uuid];
@@ -42,9 +42,9 @@ export const getEntityAtPosition = (state, x, y, mapUuid) => {
   })
 };
 
-export const getEntitiesOnMap = (state, mapUuid) => {
+export const getOtherEntitiesOnMap = (state, entityUuid, mapUuid) => {
   const uuidActorPairs = toPairs(state.maps.registry);
-  const pairsOnMap = select(uuidActorPairs, ([uuid, actor]) => actor.mapUuid === mapUuid);
+  const pairsOnMap = filter(uuidActorPairs, ([uuid, actor]) => (actor.mapUuid === mapUuid && uuid !== entityUuid));
   const uuidsOnMap = map(pairsOnMap, ([uuid, _]) => uuid);
   return uuidsOnMap;
 };
