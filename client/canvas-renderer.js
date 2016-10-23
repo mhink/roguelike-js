@@ -38,7 +38,7 @@ const renderEntities = (context2d, state) => {
 
   for (const [uuid, { x, y }] of positions) {
     try {
-      const { tileName } = getTileForEntity(state, uuid);
+      const { name: tileName } = getTileForEntity(state, uuid);
       const coords = getTileParams(state, x - dx, y - dy, tileName);
       context2d.drawImage(...coords);
     } catch (err) {

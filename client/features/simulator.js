@@ -1,4 +1,5 @@
 import { reject, findIndex } from "lodash";
+import entityReducer from "util/entity-reducer";
 
 const initialState = {
   currentTime:  0,
@@ -6,23 +7,39 @@ const initialState = {
   registry:     {}
 };
 
+export const getCurrentTime = (state) => state.simulator.currentTime;
 export const getSimulationComponent = (state, uuid) => state.simulator.registry[uuid];
 export const getCurrentEvent = (state) => state.simulator.eventQueue[0];
 export const runClock = () => ({ type: "RUN_CLOCK" });
 
-export default (state = initialState, action) => {
+const enqueueEvent = (eventQueue, newEvent) => {
+  let eventIx = findIndex(eventQueue, (event) => {
+    return event.t > newEvent.t
+  });
+
+  if(eventIx === -1) {
+    eventIx = eventQueue.length;
+  }
+
+  const eqHead = eventQueue.slice(0, eventIx);
+  const eqTail = eventQueue.slice(eventIx);
+  return [
+    ...eqHead,
+    newEvent,
+    ...eqTail
+  ];
+};
+
+export default entityReducer("actor", (state = initialState, action) => {
   switch (action.type) {
     case "REAP_ENTITY": {
       const { uuid } = action.payload;
-      const nextRegistry = { ...state.registry };
-      delete nextRegistry[uuid];
       const nextEventQueue = reject(state.eventQueue, (event) => {
         event.uuid === uuid
       });
       return {
         ...state,
         eventQueue: nextEventQueue,
-        registry: nextRegistry
       }
     }
 
@@ -32,39 +49,15 @@ export default (state = initialState, action) => {
       // GUARD CLAUSE
       if (!actor) return state;
 
-      const { currentTime, eventQueue } = state;
-      const { eventType, speed, repeat } = actor;
-      const newEvent = {
-        uuid,
-        t: (currentTime + speed)
-      };
-
-      let eventIx = findIndex(eventQueue, (event) => {
-        return event.t > newEvent.t
-      });
-
-      if(eventIx === -1) {
-        eventIx = eventQueue.length;
-      }
-
-      const eqHead = eventQueue.slice(0, eventIx);
-      const eqTail = eventQueue.slice(eventIx);
-      const nextEventQueue = [
-        ...eqHead,
-        newEvent,
-        ...eqTail
-      ];
+      const nextEventQueue = enqueueEvent(
+        state.eventQueue,
+        { uuid, t: (state.currentTime + actor.speed) }
+      );
 
       return {
         ...state,
         currentTime: nextEventQueue[0].t,
         eventQueue: nextEventQueue,
-        registry: {
-          ...state.registry,
-          [uuid]: {
-            ...actor
-          }
-        }
       };
     }
     case "RUN_CLOCK": {
@@ -90,34 +83,14 @@ export default (state = initialState, action) => {
         };
       }
 
-      const { repeat, speed, eventType } = registry[uuid];
+      const { repeat, speed } = registry[uuid];
 
       if (repeat) {
         // re-enqueue the event
-        const newEvent = {
-          uuid, // same uuid
-          t: (currentTime + speed)
-        };
-
-        // where should we put it?
-        let eventIx = findIndex(nextEventQueue, (event) => {
-          return event.t > newEvent.t
-        });
-
-        // if we never found an event with a higher time,
-        // stick it at the end
-        if(eventIx === -1) {
-          eventIx = nextEventQueue.length;
-        }
-
-        // splice it in
-        const eqHead = nextEventQueue.slice(0, eventIx);
-        const eqTail = nextEventQueue.slice(eventIx);
-        nextEventQueue = [
-          ...eqHead,
-          newEvent,
-          ...eqTail
-        ];
+        nextEventQueue = enqueueEvent(
+          nextEventQueue,
+          { uuid, t: (currentTime + speed) }
+        );
       } else {
         delete nextRegistry[uuid];
       }
@@ -140,4 +113,4 @@ export default (state = initialState, action) => {
       return state;
     }
   }
-};
+});

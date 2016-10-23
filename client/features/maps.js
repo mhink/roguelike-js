@@ -1,6 +1,9 @@
 // @flow
 /* eslint max-len: [ "error", 105 ] no-shadow: ["error", { "allow": ["uuid"]}]*/
 
+import entityReducer, {
+  updateEntity
+} from "util/entity-reducer";
 import { findKey, map } from "lodash";
 import { v4 as uuid } from "uuid";
 
@@ -57,7 +60,7 @@ export const createMap = (background, x, y) => ({
 });
 
 /* eslint complexity: ["warn"] max-statements: ["warn"] */
-export default (state = initialState, action) => {
+export default entityReducer("position", (state = initialState, action) => {
   switch (action.type) {
     case "CREATE_MAP": {
       const { uuid, background, dimensions } = action.payload;
@@ -77,50 +80,22 @@ export default (state = initialState, action) => {
       const entity = state.registry[uuid];
       if (entity) {
         const { x: x0, y: y0 } = entity;
-        return {
-          ...state,
-          registry: {
-            ...state.registry,
-            [uuid]: {
-              ...entity,
-              x: x0 + dx,
-              y: y0 + dy
-            }
-          }
-        };
+        return updateEntity(state, uuid, {
+          x: x0 + dx,
+          y: y0 + dy
+        });
       } else {
         return state;
       }
     }
-    case "REAP_ENTITY": {
-      const { uuid } = action.payload;
-      const nextRegistry = { ...state.registry };
-      delete nextRegistry[uuid];
-      return {
-        ...state,
-        registry: nextRegistry
-      }
-    }
-
     case "SPAWN_ENTITY": {
       const { uuid, position } = action.payload;
-      if (position) {
-        if (!position.mapUuid) {
-          position.mapUuid = state.currentMap;
-        }
-        return {
-          ...state,
-          registry: {
-            ...state.registry,
-            [uuid]: position
-          }
-        };
-      } else {
-        return state;
-      }
+      return (position.mapUuid
+        ? state
+        : updateEntity(state, uuid, { mapUuid: state.currentMap }));
     }
     default: {
       return state;
     }
   }
-};
+});

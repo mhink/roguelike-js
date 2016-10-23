@@ -15,7 +15,9 @@ export default function* () {
 
   yield put(spawnEntity({
     position: { x: rx, y: ry },
-    tileName: "goblin",
+    tile: {
+      name: "goblin"
+    },
     actor: {
       repeat: true,
       speed: 7,

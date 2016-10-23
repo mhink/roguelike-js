@@ -34,7 +34,9 @@ const initializeGame = function* () {
   yield put(spawnEntity({
     player:   true,
     position: { x: 8, y: 8 },
-    tileName: "dwarf",
+    tile: {
+      name: "dwarf"
+    },
     actor: {
       repeat:    true,
       speed:     10,
@@ -48,7 +50,9 @@ const initializeGame = function* () {
   }));
   yield put(spawnEntity({
     position: { x: 1, y: 1 },
-    tileName: "armour_goblin",
+    tile: {
+      name: "armour_goblin",
+    },
     actor: {
       repeat:    true,
       speed:     7,

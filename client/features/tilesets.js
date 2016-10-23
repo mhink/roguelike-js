@@ -1,29 +1,7 @@
 // @flow
 /* eslint-disable max-statements */
 
-import type { AppState, Action } from "root-reducer";
-
-export type TilesetsState = {
-  images: {
-    [path: string]: {
-      img: Object,
-      sWidth: number,
-      sHeight: number,
-    }
-  },
-  tiles: {
-    [name: string]: {
-      image: string,
-      sx0: number,
-      sy0: number
-    }
-  },
-  registry: {
-    [key: string]: {
-      tileName: string
-    }
-  }
-}
+import entityReducer from "util/entity-reducer";
 
 const initialState = {
   tiles:    {},
@@ -59,34 +37,8 @@ export const registerTile = (name, { x: sx0, y: sy0 }, image) => ({
   }
 });
 
-export default (state: TilesetsState = initialState, action: Action) => {
+export default entityReducer("tile", (state = initialState, action) => {
   switch (action.type) {
-    case "REAP_ENTITY": {
-      const { uuid } = action.payload;
-      const nextRegistry = { ...state.registry };
-      delete nextRegistry[uuid];
-      return {
-        ...state,
-        registry: nextRegistry
-      }
-    }
-
-    case "SPAWN_ENTITY": {
-      const { uuid, tileName } = action.payload;
-      if (tileName) {
-        return {
-          ...state,
-          registry: {
-            ...state.registry,
-            [uuid]: {
-              tileName
-            }
-          }
-        };
-      } else {
-        return state;
-      }
-    }
     case "BATCH_REGISTER_TILES": {
       const { image, tiles } = action.payload;
       const newTiles = { ...state.tiles };
@@ -124,17 +76,17 @@ export default (state: TilesetsState = initialState, action: Action) => {
       return state;
     }
   }
-};
+});
 
-export const getTileForEntity = (state: AppState, uuid: string) => state.tilesets.registry[uuid];
-export const getTileByName = (state: AppState, name: string) => state.tilesets.tiles[name];
-export const getImageByPath = (state: AppState, path: string) => state.tilesets.images[path];
+export const getTileForEntity = (state, uuid) => state.tilesets.registry[uuid];
+export const getTileByName = (state, name) => state.tilesets.tiles[name];
+export const getImageByPath = (state, path) => state.tilesets.images[path];
 
 const TILE_HEIGHT_SCALING_FACTOR = 2;
 const TILE_WIDTH_SCALING_FACTOR = 2;
 
 // eslint-disable-next-line max-params
-export const getTileParams = (state: AppState, dx0: number, dy0: number, name: string) => {
+export const getTileParams = (state, dx0, dy0, name) => {
   const tile = getTileByName(state, name);
   if (!tile) {
     throw new Error(`Couldn't find a tile named ${name}`);

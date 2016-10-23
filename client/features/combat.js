@@ -1,8 +1,8 @@
+import entityReducer from "util/entity-reducer";
 import { filter, keys } from 'lodash';
 
 const initialState = {
   callReaper: false,
-  registry: {}
 };
 
 export const getDeadEntityUuids = (state) => {
@@ -11,17 +11,8 @@ export const getDeadEntityUuids = (state) => {
   return filter(uuids, (uuid) => (state.combat.registry[uuid].hp <= 0));
 };
 
-export default (state = initialState, action) => {
+export default entityReducer("combat", (state = initialState, action) => {
   switch (action.type) {
-    case "REAP_ENTITY": {
-      const { uuid } = action.payload;
-      const nextRegistry = { ...state.registry };
-      delete nextRegistry[uuid];
-      return {
-        ...state,
-        registry: nextRegistry
-      }
-    }
     case "DO_COMBAT": {
       const { attackerUuid, targetUuid } = action.payload;
       const { hp: targetHp } = state.registry[targetUuid];
@@ -41,24 +32,8 @@ export default (state = initialState, action) => {
         }
       };
     }
-    case "SPAWN_ENTITY": {
-      const { uuid, combat } = action.payload;
-
-      if(!combat) return state;
-      const { hp, maxHp, atk } = combat;
-
-      return {
-        ...state,
-        registry: {
-          ...state.registry,
-          [uuid]: {
-            ...combat
-          }
-        }
-      };
-    }
     default: {
       return state;
     }
   }
-};
+});
