@@ -38,12 +38,15 @@ export default function* () {
       atk: 5
     },
     appearance: {
+      living:  true,
+      body:    'humanoid',
+      species: 'human'
     }
   }));
   yield put(spawnEntity({
     position: { x: 1, y: 1 },
     tile: {
-      name: "armour_goblin",
+      name: "goblin",
     },
     actor: {
       repeat:    true,
@@ -56,11 +59,13 @@ export default function* () {
       atk: 2
     },
     appearance: {
-      type: ['living', 'humanoid', 'goblin']
+      living:  true,
+      body:    'humanoid',
+      species: 'goblin'
     },
     disposition: {
-      attraction: null,
-      repulsion: null
+      attractionMap: null,
+      repulsionMap: null
     }
   }));
 };
