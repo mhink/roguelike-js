@@ -32,7 +32,7 @@ export const backgroundTiles = function* (state: AppState) {
 
   for (let x = x0; x < x1; x++) {
     for (let y = y0; y < y1; y++) {
-      yield [x, y, background];
+      yield { x, y, tileName: background };
     }
   }
 };

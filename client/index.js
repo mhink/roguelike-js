@@ -28,5 +28,5 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
   window.$$store = store;
-  window.$$renderer = new CanvasRenderer(store, context2d);
+  window.$$renderer = new CanvasRenderer(store, context2d, { x: 32, y: 32 });
 });

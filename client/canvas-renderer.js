@@ -16,34 +16,44 @@ import {
   getTileForEntity
 } from "features/tilesets";
 
+const drawTile = (context2d, state, tileName, dPos, screenTileSize) => {
+  try {
+    const { x: dtx, y: dty } = dPos;
+    const { x: dWidth, y: dHeight } = screenTileSize;
+    const { img, sx, sy, sWidth, sHeight } = getTileParams(state, tileName);
+    const [dx, dy] = [dtx * dWidth, dty * dHeight];
+
+    context2d.drawImage(
+      img,
+      sx, sy,
+      sWidth, sHeight,
+      dx, dy,
+      dWidth, dHeight
+    );
+  } catch (err) {
+    console.error(`Couldn't draw tile- error: ${err}`);
+  }
+};
+
 const renderBackdrop = (context2d, dimensions) => {
   const { sx, sy } = dimensions;
   context2d.fillRect(0, 0, sx, sy);
 };
 
-const renderBackground = (context2d, state) => {
-  for (const [x, y, tile] of backgroundTiles(state)) {
-    try {
-      const coords = getTileParams(state, x, y, tile);
-      context2d.drawImage(...coords);
-    } catch (err) {
-      console.error(`Couldn't draw image- error: ${err}`);
-    }
+const renderBackground = (context2d, state, screenTileSize) => {
+  for (const { tileName, ...dPos } of backgroundTiles(state)) {
+    drawTile(context2d, state, tileName, dPos, screenTileSize);
   }
 };
 
-const renderEntities = (context2d, state) => {
+const renderEntities = (context2d, state, screenTileSize) => {
   const positions = getPositions(state);
   const { x: dx, y: dy } = getOffset(state);
 
-  for (const [uuid, { x, y }] of positions) {
-    try {
-      const { name: tileName } = getTileForEntity(state, uuid);
-      const coords = getTileParams(state, x - dx, y - dy, tileName);
-      context2d.drawImage(...coords);
-    } catch (err) {
-      console.error(`Couldn't draw image- error: ${err}`);
-    }
+  for (const [uuid, { x: x0, y: y0 }] of positions) {
+    const { name: tileName } = getTileForEntity(state, uuid);
+    const dPos = { x: x0 - dx, y: y0 - dy };
+    drawTile(context2d, state, tileName, dPos, screenTileSize);
   }
 };
 
@@ -59,10 +69,11 @@ const renderMessage = (context2d, state) => {
 };
 
 export default class CanvasRenderer {
-  constructor(store, context2d) {
+  constructor(store, context2d, tileDimensions) {
     this._context2d = context2d;
     this._store = store;
     this._unsubscribe = store.subscribe(() => this.handleUpdate());
+    this._tileDimensions = tileDimensions;
   }
 
   handleUpdate() {
@@ -74,8 +85,8 @@ export default class CanvasRenderer {
 
   render(state) {
     renderBackdrop(this._context2d, this._getDimensions());
-    renderBackground(this._context2d, state);
-    renderEntities(this._context2d, state);
+    renderBackground(this._context2d, state, this._tileDimensions);
+    renderEntities(this._context2d, state, this._tileDimensions);
     renderMessage(this._context2d, state);
   }
 
