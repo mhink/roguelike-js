@@ -1,9 +1,10 @@
-import { findKey, map } from "lodash";
+import { toPairs, findKey, map, select } from "lodash";
 
 export const entityCanMoveTo = (state, uuid, { dx, dy }) => {
   const { mapUuid, x: x0, y: y0 } = state.maps.registry[uuid];
   const { dimensions: { x: sx, y: sy } } = state.maps.maps[mapUuid];
   const [x, y] = [x0 + dx, y0 + dy];
+
   if (x < 0 || x >= sx || y < 0 || y >= sy) {
     return false;
   } else if (getEntityAtPosition(state, x, y, mapUuid)) {
@@ -11,7 +12,6 @@ export const entityCanMoveTo = (state, uuid, { dx, dy }) => {
   } else { 
     return true;
   }
-
 };
 
 export const getCurrentMap = (state) => state.maps.currentMap;
@@ -24,7 +24,14 @@ export const getPlayerPosition = (state) => state.maps.registry[state.player.pla
 export const getPositions = (state) => map(state.maps.registry, (pos, uuid) => [uuid, pos]);
 export const getPositionForEntity = (state, uuid) => state.maps.registry[uuid];
 
-// TODO: make this more efficient!
+
+// TODO: Make this more efficient when performance starts breaking down!
+//
+//       The easiest way to do so would be to build an array for the map containing
+//       an entity reference (or null) at each position on the map representing
+//       the entity at that position.
+//
+//       When _that_ gets too expensive, represent entities using a quadtree.
 export const getEntityAtPosition = (state, x, y, mapUuid) => {
   return findKey(state.maps.registry, (pos, uuid) => {
     return (
@@ -33,4 +40,11 @@ export const getEntityAtPosition = (state, x, y, mapUuid) => {
     &&  pos.y === y
     );
   })
+};
+
+export const getEntitiesOnMap = (state, mapUuid) => {
+  const uuidActorPairs = toPairs(state.maps.registry);
+  const pairsOnMap = select(uuidActorPairs, ([uuid, actor]) => actor.mapUuid === mapUuid);
+  const uuidsOnMap = map(pairsOnMap, ([uuid, _]) => uuid);
+  return uuidsOnMap;
 };

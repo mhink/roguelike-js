@@ -25,7 +25,7 @@ export default function* () {
     player:   true,
     position: { x: 8, y: 8 },
     tile: {
-      name: "dwarf"
+      name: "human"
     },
     actor: {
       repeat:    true,
@@ -36,6 +36,8 @@ export default function* () {
       hp: 10,
       maxHp: 10,
       atk: 5
+    },
+    appearance: {
     }
   }));
   yield put(spawnEntity({
@@ -52,6 +54,13 @@ export default function* () {
       hp: 5,
       maxHp: 10,
       atk: 2
+    },
+    appearance: {
+      type: ['living', 'humanoid', 'goblin']
+    },
+    disposition: {
+      attraction: null,
+      repulsion: null
     }
   }));
 };

@@ -8,6 +8,8 @@ import player from "features/player";
 import rendering from "features/rendering";
 import simulator from "features/simulator";
 import combat from "features/combat";
+import disposition from "features/disposition";
+import appearance from "features/appearance";
 
 import type { TilesetsState } from "features/tilesets";
 import type { MapsState } from "features/maps";
@@ -19,7 +21,9 @@ export type AppState = {
   player: Object,
   rendering: Object,
   simulator: Object,
-  combat: Object
+  combat: Object,
+  ai: Object,
+  appearance: Object
 };
 
 export type Action = {
@@ -34,5 +38,7 @@ export default combineReducers({
   player,
   rendering,
   simulator,
-  combat
+  combat,
+  disposition,
+  appearance
 });
