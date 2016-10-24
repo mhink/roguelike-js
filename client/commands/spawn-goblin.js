@@ -4,6 +4,10 @@ import {
   getCurrentMapDimensions
 } from "features/maps";
 
+import {
+  setScreenMessage
+} from "features/rendering";
+
 import { spawnGoblin } from "entities";
 
 export default function* () {
@@ -11,5 +15,6 @@ export default function* () {
   const rx = Math.floor(Math.random() * sx);
   const ry = Math.floor(Math.random() * sy);
 
+  yield put(setScreenMessage(`Spawning goblin at (${rx}, ${ry})`));
   yield put(spawnGoblin(rx, ry));
 }

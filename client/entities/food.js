@@ -8,5 +8,8 @@ export default (x, y) => spawnEntity({
   appearance: {
     living: false,
     food: true,
+  },
+  item: {
+    isItem: true,
   }
 });

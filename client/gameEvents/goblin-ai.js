@@ -13,8 +13,17 @@ import {
 } from "features/appearance";
 
 import {
+  getCombatDetailsForEntity,
   getDeadEntityUuids
 } from "features/combat";
+
+import {
+  setScreenMessage
+} from "features/rendering";
+
+import {
+  getItemDetailsForEntity
+} from "features/items";
 
 import buildDijkstraMap, {
   findDownhill
@@ -61,21 +70,33 @@ export default function* (uuid) {
   const { dx, dy } = moveDir;
   const uuidAtPosition = yield select(getEntityAtPosition, x+dx, y+dy, mapUuid);
   if (uuidAtPosition) {
-    yield put({
-      type: "DO_COMBAT",
-      payload: {
-        attackerUuid: uuid,
-        targetUuid: uuidAtPosition,
+    const canFight = yield select(getCombatDetailsForEntity, uuidAtPosition);
+    const isItem = yield select(getItemDetailsForEntity, uuidAtPosition);
+    if (canFight) {
+      yield put(setScreenMessage(`Goblin attacks: ${uuid}`));
+      yield put({
+        type: "DO_COMBAT",
+        payload: {
+          attackerUuid: uuid,
+          targetUuid: uuidAtPosition,
+        }
+      });
+      const toReap = yield select(getDeadEntityUuids);
+      for (const uuid of toReap) {
+        yield put({
+          type: "REAP_ENTITY",
+          payload: { uuid }
+        });
       }
-    });
-    const toReap = yield select(getDeadEntityUuids);
-    for (const uuid of toReap) {
+      return;
+    }
+
+    if (isItem) {
       yield put({
         type: "REAP_ENTITY",
-        payload: { uuid }
+        payload: {uuid: uuidAtPosition}
       });
     }
-    return;
   }
 
   const canMove = yield select(entityCanMoveTo, uuid, moveDir);

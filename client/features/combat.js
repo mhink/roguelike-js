@@ -5,6 +5,7 @@ const initialState = {
   callReaper: false,
 };
 
+export const getCombatDetailsForEntity = (state, uuid) => state.combat.registry[uuid];
 export const getDeadEntityUuids = (state) => {
   const uuids = keys(state.combat.registry);
 

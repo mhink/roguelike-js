@@ -33,5 +33,5 @@ export default function* () {
 
   yield put(spawnPlayer(8, 8));
   yield put(spawnGoblin(1, 1));
-  ////yield put(spawnFood(10,2));
+  yield put(spawnFood(10,2));
 };
