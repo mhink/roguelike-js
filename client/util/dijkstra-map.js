@@ -4,30 +4,16 @@ import {
   allDirections
 } from "util/directions";
 
-export const findDownhill = (dmap, { x: sx, y: sy }, { x: x0, y: y0 }) => {
-  let lowestValue = 1001;
-  let downhill = null;
+const lowestNeighborValue = (dmap, x0, y0, sx, sy) => {
+  let lowest = 100;
 
-  for(const { dx, dy } of allDirections()) {
-    const [x, y] = [x0 + dx, y0 + dy];
+  for (const { dx, dy } of allDirections()) {
+    const [x, y] = [x0+dx, y0+dy];
+
     if (x > 0 && x < sx && y > 0 && y < sy) {
-      if (dmap[y][x]) {
+      if(dmap[y][x] < lowest) {
         lowest = dmap[y][x];
-        downhill = { dx, dx };
       }
-    }
-  }
-
-  return downhill;
-}
-
-const lowestNeighbourValue = (dmap, { x: sx, y: sy }, { x: x0, y: y0 }) => {
-  let lowest = 1000;
-
-  for (const { dx, dy } of cardinalDirections()) {
-    const [x, y] = [x0 + dx, y0 + dy];
-    if (x > 0 && x < sx && y > 0 && y < sy) {
-      lowest = dmap[y][x];
     }
   }
 
@@ -37,12 +23,11 @@ const lowestNeighbourValue = (dmap, { x: sx, y: sy }, { x: x0, y: y0 }) => {
 export default function(mapDimensions, goalPoints) {
   const { x: sx, y: sy } = mapDimensions;
 
-  console.log(mapDimensions);
-  const dmap = new Array(sy);
+  let dmap = new Array(sy);
   for (let y = 0; y < sy; y++) {
     dmap[y] = new Array(sx);
     for (let x = 0; x < sx; x++) {
-      dmap[y][x] = 1000;
+      dmap[y][x] = 100;
     }
   }
 
@@ -50,19 +35,33 @@ export default function(mapDimensions, goalPoints) {
     dmap[y][x] = 0;
   }
 
-  let repeat = 0;
+  let repeat = false;
+  let iterations = 0;
   do {
-    repeat++;
+    iterations++;
+    repeat = false;
+    const nextMap = [];
+
     for (let y = 0; y < sy; y++) {
+      const nextRow = [];
+
       for (let x = 0; x < sx; x++) {
-        console.log(`Checking ${x}, ${y}`);
-        const cellValue = dmap[y][x];
-        const lowestN = lowestNeighbourValue(dmap, mapDimensions, {x, y});
-        if (cellValue - 2 >= lowestN) {
-          dmap[y][x] = lowestN + 1;
-          repeat = 0;
+        const lval = lowestNeighborValue(dmap, x, y, sx, sy);
+
+        if(dmap[y][x] - 2 >= lval) {
+          nextRow.push(lval + 1);
+          repeat = true;
+        } else {
+          nextRow.push(dmap[y][x]);
         }
       }
+
+      nextMap.push(nextRow);
     }
-  } while(repeat < 20);
+
+    dmap = nextMap;
+  } while (repeat);
+
+  console.log("Iterations: ", iterations);
+  return dmap;
 }

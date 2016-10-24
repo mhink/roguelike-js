@@ -15,10 +15,11 @@ export const entityCanMoveTo = (state, uuid, { dx, dy }) => {
 };
 
 export const getCurrentMap = (state) => state.maps.currentMap;
-export const getCurrentMapDimensions = (state) => {
-  const currentMap = state.maps.maps[state.maps.currentMap];
-  return currentMap && currentMap.dimensions;
-};
+export const getCurrentMapDimensions = (state) => getMapDimensions(state, state.maps.currentMap);
+export const getMapDimensions = (state, mapUuid) => {
+  const map = state.maps.maps[mapUuid];
+  return (map && map.dimensions);
+}
 
 export const getPlayerPosition = (state) => state.maps.registry[state.player.playerUuid];
 export const getPositions = (state) => map(state.maps.registry, (pos, uuid) => [uuid, pos]);

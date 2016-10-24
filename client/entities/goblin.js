@@ -20,8 +20,7 @@ export default (x, y) => spawnEntity({
     body:    'humanoid',
     species: 'goblin'
   },
-  disposition: {
-    attractionMap: null,
-    repulsionMap: null
+  dispositions: {
+    attraction: null,
   }
 });

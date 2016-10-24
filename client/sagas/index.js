@@ -1,5 +1,5 @@
 /* eslint-disable no-magic-numbers */
-import { put, fork, call } from "redux-saga/effects";
+import { put, fork, call, select } from "redux-saga/effects";
 
 import { 
   rawKeyboardChannel, 
@@ -20,7 +20,13 @@ import runEventSaga from "./run-events";
 import initializeGame from "./initialize-game";
 import logIpc from "./log-ipc";
 
+import goblinAi from "gameEvents/goblin-ai";
+import { getDebugDisposition } from "features/disposition";
+
 const coreLoop = function* (canvas) {
+  const gobuuid = yield select(getDebugDisposition);
+  yield call(goblinAi, gobuuid);
+
   const task = yield fork(function* () {
     const rkChan = yield rawKeyboardChannel(canvas);
 

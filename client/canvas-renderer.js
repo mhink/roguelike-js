@@ -59,6 +59,40 @@ const renderEntities = (context2d, state) => {
   }
 };
 
+const renderBrainOverlay = (context2d, state) => {
+  const brainToShow = state.rendering.showBrain;
+  if (!brainToShow) return;
+  const { x: dx, y: dy } = getOffset(state);
+  const dispositions = state.disposition.registry[brainToShow];
+  if (!dispositions) return;
+  const attractors = dispositions.attraction || [[]];
+
+  context2d.save();
+  for (let y = 0; y < attractors.length; y++) {
+    for (let x = 0; x < attractors[y].length; x++) {
+      const { x: dWidth, y: dHeight } = getTileSizePx(state);
+      const attraction = attractors[y][x];
+      const [dx0, dy0] = [(x-dx) * dWidth, (y-dy) * dHeight];
+
+      const r = Math.round(255 - ((attraction / 100) * 255));
+      const g = 0;
+      const b = Math.round((attraction / 10) * 255);
+      context2d.globalAlpha = 0.25;
+      context2d.fillStyle = `rgb(${r},${g},${b})`;
+      context2d.fillRect(
+        dx0, dy0,
+        dWidth, dHeight
+      );
+
+      context2d.globalAlpha = 1;
+      context2d.fillStyle = "white";
+      context2d.font = "8px monospace";
+      context2d.fillText(attraction, dx0, dy0+8);
+    }
+  }
+  context2d.restore();
+};
+
 const renderMessage = (context2d, state) => {
   const message = getMessage(state);
   if (message) {
@@ -89,5 +123,6 @@ export default class CanvasRenderer {
     renderBackground(this._context2d, state);
     renderEntities(this._context2d, state);
     renderMessage(this._context2d, state);
+    renderBrainOverlay(this._context2d, state);
   }
 }

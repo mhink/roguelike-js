@@ -1,8 +1,8 @@
 import type { AppState } from "root-reducer";
 
 const initialState = {
+  showBrain:  null,
   isCameraFrozen: false,
-
   ready:      false,
   message:    null,
   midpoint:   { x: 0, y: 0 },
@@ -61,6 +61,13 @@ export const setScreenMessage = (message) => ({
 /* eslint complexity: ["warn"] max-statements: ["warn"] */
 export default (state = initialState, action) => {
   switch (action.type) {
+    case "SHOW_BRAIN": {
+      const { uuid } = action.payload;
+      return {
+        ...state,
+        showBrain: uuid
+      }
+    }
     case "SET_CAMERA_FROZEN": {
       const { isCameraFrozen } = action.payload;
       return {
