@@ -7,6 +7,10 @@ import {
   getSimulationComponent
 } from "features/simulator";
 
+import {
+  getGameOver
+} from "features/player";
+
 // TODO: unfuck this control flow
 export default function* () {
   for(let i = 0; i < 10; i++) {
@@ -33,5 +37,11 @@ export default function* () {
     }
 
     yield call(eventSaga, uuid);
+
+    const gameOver = yield select(getGameOver);
+
+    if (gameOver){
+      return true;
+    }
   };
 }

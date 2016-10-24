@@ -1,7 +1,9 @@
 const initialState = {
-  playerUuid: null
+  playerUuid: null,
+  gameOver: false
 };
 
+export const getGameOver = (state) => state.player.gameOver;
 export const getPlayerUuid = (state) => state.player.playerUuid;
 
 export default (state = initialState, { type, payload }) => {
@@ -14,6 +16,16 @@ export default (state = initialState, { type, payload }) => {
         };
       } else {
         return state;
+      }
+    }
+    case "REAP_ENTITY": {
+      const { uuid } = payload;
+      if (uuid === state.playerUuid) {
+        return {
+          ...state,
+          playerUuid: null,
+          gameOver: true
+        }
       }
     }
     default: {

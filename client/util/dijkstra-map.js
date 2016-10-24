@@ -4,6 +4,23 @@ import {
   allDirections
 } from "util/directions";
 
+export const findDownhill = (dmap, x0, y0, sx, sy) => {
+  let lowestVal = 100;
+  let lowestDirection = null;
+
+  for (const { dx, dy } of allDirections()) {
+    const [x, y] = [x0+dx, y0+dy];
+    if (x > 0 && x < sx && y > 0 && y < sy) {
+      if(dmap[y][x] < lowestVal) {
+        lowestVal = dmap[y][x];
+        lowestDirection = { dx, dy };
+      }
+    }
+  }
+
+  return lowestDirection;
+}
+
 const lowestNeighborValue = (dmap, x0, y0, sx, sy) => {
   let lowest = 100;
 
@@ -61,7 +78,5 @@ export default function(mapDimensions, goalPoints) {
 
     dmap = nextMap;
   } while (repeat);
-
-  console.log("Iterations: ", iterations);
   return dmap;
 }

@@ -76,8 +76,8 @@ const renderBrainOverlay = (context2d, state) => {
 
       const r = Math.round(255 - ((attraction / 100) * 255));
       const g = 0;
-      const b = Math.round((attraction / 10) * 255);
-      context2d.globalAlpha = 0.25;
+      const b = Math.round((attraction / 5) * 255);
+      context2d.globalAlpha = 0.5;
       context2d.fillStyle = `rgb(${r},${g},${b})`;
       context2d.fillRect(
         dx0, dy0,
@@ -123,6 +123,5 @@ export default class CanvasRenderer {
     renderBackground(this._context2d, state);
     renderEntities(this._context2d, state);
     renderMessage(this._context2d, state);
-    renderBrainOverlay(this._context2d, state);
   }
 }

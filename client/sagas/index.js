@@ -19,26 +19,25 @@ import runCommandSaga from "./run-command";
 import runEventSaga from "./run-events";
 import initializeGame from "./initialize-game";
 import logIpc from "./log-ipc";
-
-import goblinAi from "gameEvents/goblin-ai";
-import { getDebugDisposition } from "features/disposition";
+import { setScreenMessage } from "features/rendering";
 
 const coreLoop = function* (canvas) {
-  const gobuuid = yield select(getDebugDisposition);
-  yield call(goblinAi, gobuuid);
-
   const task = yield fork(function* () {
     const rkChan = yield rawKeyboardChannel(canvas);
 
-    while (true) {
+    let exiting = false;
+    do {
       const command = yield call(takeAsCommand, rkChan);
       if (!command) continue;
 
       const shouldRun = yield call(runCommandSaga, command);
       if (!shouldRun) continue;
 
-      yield call(runEventSaga);
-    }
+      exiting = yield call(runEventSaga);
+
+    } while (!exiting);
+
+    yield put(setScreenMessage("Game over."));
   });
   return task;
 }

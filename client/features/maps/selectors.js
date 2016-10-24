@@ -33,15 +33,13 @@ export const getPositionForEntity = (state, uuid) => state.maps.registry[uuid];
 //       the entity at that position.
 //
 //       When _that_ gets too expensive, represent entities using a quadtree.
-export const getEntityAtPosition = (state, x, y, mapUuid) => {
-  return findKey(state.maps.registry, (pos, uuid) => {
-    return (
+export const getEntityAtPosition = (state, x, y, mapUuid) => (
+  findKey(state.maps.registry, (pos, uuid) => (
         pos.mapUuid === mapUuid
     &&  pos.x === x
     &&  pos.y === y
-    );
-  })
-};
+  ))
+);
 
 export const getOtherEntitiesOnMap = (state, entityUuid, mapUuid) => {
   const uuidActorPairs = toPairs(state.maps.registry);

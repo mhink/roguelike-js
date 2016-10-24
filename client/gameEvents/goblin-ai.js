@@ -5,24 +5,20 @@ import {
   getPositionForEntity,
   getOtherEntitiesOnMap,
   getMapDimensions,
+  getEntityAtPosition
 } from "features/maps";
 
 import {
   getAppearanceForEntity
 } from "features/appearance";
 
-import buildDijkstraMap from "util/dijkstra-map";
+import {
+  getDeadEntityUuids
+} from "features/combat";
 
-const DIRECTIONS = [
-  { dx: -1, dy: +0 },
-  { dx: +0, dy: +1 },
-  { dx: +0, dy: -1 },
-  { dx: +1, dy: +0 },
-  { dx: -1, dy: -1 },
-  { dx: +1, dy: -1 },
-  { dx: -1, dy: +1 },
-  { dx: +1, dy: +1 },
-];
+import buildDijkstraMap, {
+  findDownhill
+} from "util/dijkstra-map";
 
 export default function* (uuid) {
   yield put({
@@ -30,13 +26,10 @@ export default function* (uuid) {
     payload: { uuid }
   });
 
-  console.log(`Calculating AI for goblin ${uuid}`);
   const { x, y, mapUuid } = yield select(getPositionForEntity, uuid);
 
   const mapDimensions = yield select(getMapDimensions, mapUuid);
-
   const entitiesOnMap = yield select(getOtherEntitiesOnMap, uuid, mapUuid);
-
   const appearances = [];
   for(const uuid of entitiesOnMap) {
     const appearance = yield select(getAppearanceForEntity, uuid);
@@ -45,6 +38,9 @@ export default function* (uuid) {
   }
 
   const attractors = filter(appearances, ([uuid, appearance]) => {
+    if (appearance.food) {
+      return true;
+    }
     if (appearance.body === 'humanoid' && appearance.species !== 'goblin') {
       return true;
     }
@@ -52,7 +48,6 @@ export default function* (uuid) {
   });
 
   const attPos = map(attractors, ([uuid, appearance, position]) => position);
-
   const dmap = buildDijkstraMap(mapDimensions, attPos);
   yield put({
     type: "SET_ATTRACTOR_MAP",
@@ -62,6 +57,37 @@ export default function* (uuid) {
     }
   });
 
+  const moveDir = findDownhill(dmap, x, y, mapDimensions.x, mapDimensions.y);
+  const { dx, dy } = moveDir;
+  const uuidAtPosition = yield select(getEntityAtPosition, x+dx, y+dy, mapUuid);
+  if (uuidAtPosition) {
+    yield put({
+      type: "DO_COMBAT",
+      payload: {
+        attackerUuid: uuid,
+        targetUuid: uuidAtPosition,
+      }
+    });
+    const toReap = yield select(getDeadEntityUuids);
+    for (const uuid of toReap) {
+      yield put({
+        type: "REAP_ENTITY",
+        payload: { uuid }
+      });
+    }
+    return;
+  }
+
+  const canMove = yield select(entityCanMoveTo, uuid, moveDir);
+  if (canMove) {
+    yield put({
+      type: "MOVE_ENTITY",
+      payload: {
+        uuid,
+        ...moveDir,
+      }
+    });
+  }
 
   return;
 };
