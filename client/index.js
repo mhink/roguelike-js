@@ -18,8 +18,8 @@ document.addEventListener("DOMContentLoaded", () => {
     type:    "INIT_SCREEN_SIZE",
     payload: {
       tileSizePx: {
-        x: 32,
-        y: 32
+        x: 16,
+        y: 16
       },
       screenSizePx: {
         x: canvas.width,

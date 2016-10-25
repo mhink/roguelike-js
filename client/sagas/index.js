@@ -23,11 +23,13 @@ import { setScreenMessage } from "features/rendering";
 
 const coreLoop = function* (canvas) {
   const task = yield fork(function* () {
+    console.log("starting core loop");
     const rkChan = yield rawKeyboardChannel(canvas);
 
     let exiting = false;
     do {
       const command = yield call(takeAsCommand, rkChan);
+      yield put({type: "FOO"});
       if (!command) continue;
 
       const shouldRun = yield call(runCommandSaga, command);
@@ -42,12 +44,18 @@ const coreLoop = function* (canvas) {
   return task;
 }
 
+import { 
+  createVectorField,
+  getVectorAtPoint
+} from "features/vecfield";
+
 export default function* rootSaga(canvas) {
   const ipcChan = yield ipcChannel("ipc-saga");
 
-  yield* initializeGame();
+  // yield* initializeGame();
 
   yield put({ type: "START_RENDERING" });
+  yield put(createVectorField(38, 38));
 
   yield [
     fork(coreLoop),

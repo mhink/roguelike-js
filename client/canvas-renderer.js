@@ -104,6 +104,44 @@ const renderMessage = (context2d, state) => {
   }
 };
 
+import { getVectorAtPoint } from "features/vecfield";
+const { pow, sqrt, atan } = Math;
+const renderVectorFieldAtTile = (context2d, state, tx, ty) => {
+  const { x, y } = getVectorAtPoint(state, tx, ty);
+  const { x: tsx, y: tsy } = state.rendering.tileSizePx;
+
+  // Calculate pixel location of the vector we're rendering
+  const [px, py] = [tx * tsx, ty * tsy];
+
+  const _x = x === 0 ? 0.001 : x;
+  // Calculate rotation of arrow.
+  // (1, 0) corresponds to 0 radians.
+  const v = sqrt(pow(_x, 2), pow(y, 2));
+  const theta = atan(y / _x);
+
+  context2d.save();
+  context2d.translate(px + (tsx / 2), py + (tsy  / 2));
+  context2d.rotate(theta);
+  context2d.moveTo(-(v/2), 0);
+  context2d.lineTo( (v/2), 0);
+  context2d.restore();
+};
+
+const renderVectorField = (context2d, state) => {
+  if(!state.vecfield.field) return;
+
+  context2d.save();
+  context2d.strokeStyle = "white";
+  const { x: sx, y: sy } = state.rendering.screenSize;
+  for (let y = 0; y < sx; y++) {
+    for (let x = 0; x < sy; x++) {
+      renderVectorFieldAtTile(context2d, state, x, y);
+    }
+  }
+  context2d.stroke();
+  context2d.restore();
+};
+
 export default class CanvasRenderer {
   constructor(store, context2d, tileDimensions) {
     this._context2d = context2d;
@@ -113,15 +151,18 @@ export default class CanvasRenderer {
 
   handleUpdate() {
     const state = this._store.getState();
+    console.log("Handling update...");
     if (shouldRender(state)) {
       this.render(state);
     }
   }
 
   render(state) {
-    renderBackdrop(this._context2d, state);
-    renderBackground(this._context2d, state);
-    renderEntities(this._context2d, state);
-    renderMessage(this._context2d, state);
+    console.log("Rendering...");
+    //renderBackdrop(this._context2d, state);
+    //renderBackground(this._context2d, state);
+    //renderEntities(this._context2d, state);
+    //renderMessage(this._context2d, state);
+    renderVectorField(this._context2d, state);
   }
 }

@@ -11,6 +11,7 @@ import combat from "features/combat";
 import disposition from "features/disposition";
 import appearance from "features/appearance";
 import items from "features/items";
+import vecfield from "features/vecfield";
 
 import type { TilesetsState } from "features/tilesets";
 import type { MapsState } from "features/maps";
@@ -25,7 +26,8 @@ export type AppState = {
   combat: Object,
   ai: Object,
   appearance: Object,
-  items: Object
+  items: Object,
+  vecfield: Object
 };
 
 export type Action = {
@@ -43,5 +45,6 @@ export default combineReducers({
   combat,
   disposition,
   appearance,
-  items
+  items,
+  vecfield
 });
