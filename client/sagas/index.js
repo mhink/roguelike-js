@@ -7,7 +7,8 @@ import {
 } from "keyboard-saga-helpers";
 
 import {
-  mouseChannel
+  mouseChannel,
+  takeEveryMouse
 } from "mouse-saga-helpers";
 
 import { 
@@ -46,11 +47,15 @@ const coreLoop = function* (canvas) {
 
 import { 
   createVectorField,
-  getVectorAtPoint
 } from "features/vecfield";
+
+function* logger(coords) {
+  const { x, y } = coords;
+}
 
 export default function* rootSaga(canvas) {
   const ipcChan = yield ipcChannel("ipc-saga");
+  const mouseChan = yield mouseChannel(canvas);
 
   // yield* initializeGame();
 
@@ -59,6 +64,7 @@ export default function* rootSaga(canvas) {
 
   yield [
     fork(coreLoop),
-    fork(takeEveryIpc, ipcChan, logIpc)
+    fork(takeEveryIpc, ipcChan, logIpc),
+    fork(takeEveryMouse, mouseChan, logger),
   ];
 }

@@ -37,6 +37,14 @@ export const getOffset = (state) => state.rendering.offset;
 export const getMidpoint = (state) => state.rendering.midpoint;
 export const getCameraFrozen = (state) => state.rendering.isCameraFrozen;
 
+export const getTileForPixel = (state, px, py) => {
+  const { x: tsx, y: tsy } = getTileSizePx(state);
+  return {
+    x: Math.floor(px / tsx), 
+    y: Math.floor(py / tsy)
+  };
+};
+
 export const centerViewport = (x, y) => ({
   type:    "CENTER_VIEWPORT",
   payload: {

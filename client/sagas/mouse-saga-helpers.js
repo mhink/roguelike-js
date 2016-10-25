@@ -1,16 +1,37 @@
 import { eventChannel } from "redux-saga";
 import { put, call, fork, cancelled, take, select } from "redux-saga/effects";
 
-const subscribeToMouse = (canvas) => (emitter) => {
+const subscribeToMouse = (canvas) => (emit) => {
   const mouseListener = (mouseEvent) => {
-    // const [cx, cy] = [mouseEvent.clientX, mouseEvent.clientY];
+    const [px, py] = [mouseEvent.clientX, mouseEvent.clientY];
+    emit({px, py});
   }
 
-  canvas.addEventListener("mousemove", mouseListener);
+  canvas.addEventListener("click", mouseListener);
 
   return () => {
-    canvas.removeEventListener("mousemove", mouseListener);
+    canvas.removeEventListener("click", mouseListener);
   };
 };
 
 export const mouseChannel = (canvas) => eventChannel(subscribeToMouse(canvas));
+
+import { getTileForPixel } from "features/rendering";
+
+export const takeEveryMouse = function* (mouseChannel, saga) {
+  const task = yield fork(function* () {
+    try {
+      while (true) {
+        const {px, py}  = yield take(mouseChannel);
+        const tileCoords = yield select(getTileForPixel, px, py);
+        console.log("forking saga with coords:", tileCoords);
+        yield fork(saga, tileCoords);
+      }
+    } finally {
+      if (yield cancelled()) {
+        mouseChannel.close();
+      }
+    }
+  });
+  return task;
+};
