@@ -1,13 +1,13 @@
 import iterOut, { distanceFrom } from "../client/util/a-star";
 
 const ORIGIN = { x:  10, y:  10 };
-const SIZE   = { x: 500, y: 500 };
+const SIZE   = { x: 200, y: 200 };
 
 const iter = iterOut(SIZE, ORIGIN);
 
 let next;
 
-console.log("Starting");
+console.log("Starting A* test (with yield)");
 const before = new Date();
 let i = 0;
 while (++i) {

@@ -11,7 +11,7 @@
     "clean": "rimraf dist",
     "lint": "eslint --color --ext .js client",
     "flow": "flow",
-    "test": "node -r babel-register -r babel-polyfill ./test/test-astar.js"
+    "test": "node -r babel-register -r babel-polyfill ./test/index.js"
   },
   "author": "Matt Hink <matt.hink@formidable.com>",
   "license": "MIT",
