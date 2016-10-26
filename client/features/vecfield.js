@@ -1,17 +1,13 @@
 import { v4 as uuid } from "uuid";
+import { 
+  allDirections,
+  allNeighbors,
+  allNeighborsPolar
+} from "util/directions";
 
-const initVectorField = (size) => {
-  const { x: sx, y: sy } = size;
-  const xField = new Int8Array(sx * sy);
-  const yField = new Int8Array(sx * sy);
-  yField.fill(4);
-  xField.fill(4);
-
-  return {
-    size,
-    xField, 
-    yField
-  };
+const getPointForIndex = (size, i) => {
+  const x = i % size.x
+  const y = Math.floor(y / size.x);
 }
 
 const getIndexForPoint = (size, x, y) => {
@@ -24,12 +20,12 @@ const initialState = {
 };
 
 export const getVectorAtPoint = (state, x, y) => {
-  const { size, xField, yField } = state.vecfield.field;
+  const { size, thetaField, rField } = state.vecfield.field;
   const { x: sx, y: sy } = size;
   const i = getIndexForPoint(size, x, y);
   return {
-    x: xField[i],
-    y: yField[i]
+    theta: thetaField[i],
+    r: rField[i]
   };
 };
 
@@ -42,11 +38,45 @@ export const createVectorField = (sx, sy) => ({
 
 export default (state = initialState, action) => {
   switch(action.type) {
-    case "CREATE_VECTOR_FIELD": {
-      const { size } = action.payload;
+    case "OVERWRITE_VECTOR_FIELD": {
+      const { point: { x: x0, y: y0 } } = action.payload;
+      const { field } = state;
+      if (!field) return state;
+
+      const { size, thetaField, rField } = field;
+      const nextThetaField = Float32Array.from(thetaField);
+      const nextRField = Float32Array.from(rField);
+
+      const ix = getIndexForPoint.bind(this, size);
+      for(const {x, y, theta, r} of allNeighborsPolar({x: x0, y: y0}, size)) {
+        console.log(x, y, theta, r);
+        nextThetaField[ix(x, y)] = theta;
+        nextRField[ix(x, y)] = 5 / (r ** 2);
+      }
       return {
         ...state,
-        field: initVectorField(size)
+        field: {
+          ...field,
+          thetaField: nextThetaField,
+          rField: nextRField
+        }
+      };
+    }
+    case "CREATE_VECTOR_FIELD": {
+      const { size } = action.payload;
+      const { x: sx, y: sy } = size;
+      const thetaField = new Float32Array(sx * sy);
+      const rField = new Float32Array(sx * sy);
+      rField.fill(0);
+      thetaField.fill(0);
+
+      return {
+        ...state,
+        field: {
+          size,
+          thetaField,
+          rField
+        }
       };
     }
     default: {

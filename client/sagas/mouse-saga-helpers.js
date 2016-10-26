@@ -24,7 +24,6 @@ export const takeEveryMouse = function* (mouseChannel, saga) {
       while (true) {
         const {px, py}  = yield take(mouseChannel);
         const tileCoords = yield select(getTileForPixel, px, py);
-        console.log("forking saga with coords:", tileCoords);
         yield fork(saga, tileCoords);
       }
     } finally {

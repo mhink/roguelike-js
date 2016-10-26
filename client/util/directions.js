@@ -23,3 +23,29 @@ export function* allDirections() {
     yield dir;
   }
 }
+
+export function* allNeighborsPolar(pos, bounds) {
+  const { x: x0, y: y0 } = pos;
+  const { x: sx, y: sy } = bounds;
+
+  for (const {dx, dy} of allDirections()) {
+    const [x, y] = [x0 + dx, y0 + dy];
+    if (x >= 0 && x < sx && y >= 0 && y < sy) {
+      const theta = Math.atan2(y0-y, x0-x);
+      const r = Math.sqrt((y0-y)**2 + (x0-x)**2);
+      yield { x, y, theta, r};
+    }
+  }
+}
+
+export function* allNeighbors(pos, bounds) {
+  const { x: x0, y: y0 } = pos;
+  const { x: sx, y: sy } = bounds;
+
+  for (const {dx, dy} of allDirections()) {
+    const [x, y] = [x0 + dx, y0 + dy];
+    if (x >= 0 && x < sx && y >= 0 && y < sy) {
+      yield { x, y };
+    }
+  }
+}

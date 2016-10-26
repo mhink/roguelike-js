@@ -49,8 +49,13 @@ import {
   createVectorField,
 } from "features/vecfield";
 
-function* logger(coords) {
-  const { x, y } = coords;
+function* nudgeVecField(coords) {
+  yield put({
+    type: "OVERWRITE_VECTOR_FIELD",
+    payload: {
+      point: coords
+    }
+  });
 }
 
 export default function* rootSaga(canvas) {
@@ -58,13 +63,12 @@ export default function* rootSaga(canvas) {
   const mouseChan = yield mouseChannel(canvas);
 
   // yield* initializeGame();
-
-  yield put({ type: "START_RENDERING" });
-  yield put(createVectorField(38, 38));
-
   yield [
     fork(coreLoop),
     fork(takeEveryIpc, ipcChan, logIpc),
-    fork(takeEveryMouse, mouseChan, logger),
+    fork(takeEveryMouse, mouseChan, nudgeVecField),
   ];
+
+  yield put({ type: "START_RENDERING" });
+  yield put(createVectorField(38, 38));
 }
