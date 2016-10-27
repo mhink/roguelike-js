@@ -32,6 +32,6 @@ export default function* () {
   yield put(createMap("blank", 38, 38));
 
   yield put(spawnPlayer(8, 8));
-  // yield put(spawnGoblin(1, 1));
+  yield put(spawnGoblin(1, 1));
   // yield put(spawnFood(10,2));
 };

@@ -25,55 +25,47 @@ import {
   getItemDetailsForEntity
 } from "features/items";
 
-import buildDijkstraMap, {
-  findDownhill
-} from "util/dijkstra-map";
+import {
+  ALL_DIRECTIONS
+} from "util/directions";
+
+import {
+  getVectorAtPoint
+} from "features/vecfield";
+
+const getNeighborForVector = (theta) => {
+  if (theta < 1 * (Math.PI / 4)) return [  1,  0];
+  if (theta < 2 * (Math.PI / 4)) return [  1,  1];
+  if (theta < 3 * (Math.PI / 4)) return [  0,  1];
+  if (theta < 4 * (Math.PI / 4)) return [ -1,  1];
+  if (theta < 5 * (Math.PI / 4)) return [ -1,  0];
+  if (theta < 6 * (Math.PI / 4)) return [ -1, -1];
+  if (theta < 7 * (Math.PI / 4)) return [  0, -1];
+  return [  1, -1];
+}
 
 export default function* (uuid) {
-  yield put({
-    type: "SHOW_BRAIN",
-    payload: { uuid }
-  });
-
   const { x, y, mapUuid } = yield select(getPositionForEntity, uuid);
+  const { theta, r } = yield select(getVectorAtPoint, x, y);
 
-  const mapDimensions = yield select(getMapDimensions, mapUuid);
-  const entitiesOnMap = yield select(getOtherEntitiesOnMap, uuid, mapUuid);
-  const appearances = [];
-  for(const uuid of entitiesOnMap) {
-    const appearance = yield select(getAppearanceForEntity, uuid);
-    const position = yield select(getPositionForEntity, uuid);
-    appearances.push([uuid, appearance, position]);
+  let dx, dy;
+  if (r > 0.01) {
+    const n_vec = getNeighborForVector(theta);
+    dx = n_vec[0];
+    dy = n_vec[1];
+  } else {
+    const rand_vec = shuffle(ALL_DIRECTIONS)[0];
+    dx = rand_vec.dx
+    dy = rand_vec.dy
   }
 
-  const attractors = filter(appearances, ([uuid, appearance]) => {
-    if (appearance.food) {
-      return true;
-    }
-    if (appearance.body === 'humanoid' && appearance.species !== 'goblin') {
-      return true;
-    }
-    return false;
-  });
+  console.log(dx, dy);
 
-  const attPos = map(attractors, ([uuid, appearance, position]) => position);
-  const dmap = buildDijkstraMap(mapDimensions, attPos);
-  yield put({
-    type: "SET_ATTRACTOR_MAP",
-    payload: {
-      uuid,
-      dmap
-    }
-  });
-
-  const moveDir = findDownhill(dmap, x, y, mapDimensions.x, mapDimensions.y);
-  const { dx, dy } = moveDir;
   const uuidAtPosition = yield select(getEntityAtPosition, x+dx, y+dy, mapUuid);
   if (uuidAtPosition) {
     const canFight = yield select(getCombatDetailsForEntity, uuidAtPosition);
     const isItem = yield select(getItemDetailsForEntity, uuidAtPosition);
     if (canFight) {
-      yield put(setScreenMessage(`Goblin attacks: ${uuid}`));
       yield put({
         type: "DO_COMBAT",
         payload: {
@@ -99,13 +91,13 @@ export default function* (uuid) {
     }
   }
 
-  const canMove = yield select(entityCanMoveTo, uuid, moveDir);
+  const canMove = yield select(entityCanMoveTo, uuid, { dx, dy });
   if (canMove) {
     yield put({
       type: "MOVE_ENTITY",
       payload: {
         uuid,
-        ...moveDir,
+        dx, dy,
       }
     });
   }

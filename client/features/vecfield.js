@@ -40,29 +40,25 @@ export const createVectorField = (sx, sy) => ({
 // decay functions
 const inverse = (r, c) => (c / r);
 const inverseSquare = (r, c) => (c / (r**2));
-const inverseThreeHalfs = (r, c) => (c / (r ** 3));
+const inverseCube = (r, c) => (c / (r ** 3));
 const step = (r, rs) => (r < rs ? r : 0);
 
 export default (state = initialState, action) => {
   switch(action.type) {
     case "RUN_CLOCK":
-      action = {
-        ...action,
-        payload: {
-          ...action.payload,
-          decayFactor: 0.75
-        }
-      };
-      // explicit fallthrough
     case "DECAY_VECTOR_FIELD": {
-      const { decayFactor } = action.payload;
+      const { payload = {} } = action;
+      const { decayConstant = 0.5 } = payload;
       const { field } = state;
       if (!field) return state;
       const { rField } = field;
       const nextRField = Float32Array.from(rField)
 
       for (let i = 0; i < nextRField.length; i++) {
-        nextRField[i] = nextRField[i] * decayFactor;
+        const r0 = nextRField[i];
+        const dR = (decayConstant * r0);
+        const r1 = r0 - dR;
+        nextRField[i] = r1 < 0.05 ? r1 : r1;
       }
 
       return {
@@ -91,11 +87,11 @@ export default (state = initialState, action) => {
 
       do {
         const [x,y,r] = next.value;
-        const xVecToPoint = (origin.x - x);
-        const yVecToPoint = (origin.y - y);
+        const xVecToPoint = (x - origin.x);
+        const yVecToPoint = (y - origin.y);
 
         const dTheta = Math.atan2(yVecToPoint, xVecToPoint); // Direction of vector change
-        const dR = step(r, intensity);
+        const dR = inverseCube(r, intensity);
         const dx = dR * Math.cos(dTheta);
         const dy = dR * Math.sin(dTheta);
 

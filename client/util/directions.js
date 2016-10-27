@@ -7,7 +7,7 @@ export function* cardinalDirections() {
   yield { dx: -1, dy:  0 };
 };
 
-const ALL_DIRECTIONS = [
+export const ALL_DIRECTIONS = [
   { dx:  0, dy:  1 },
   { dx:  0, dy: -1 },
   { dx:  1, dy:  0 },

@@ -30,7 +30,6 @@ const coreLoop = function* (canvas) {
     let exiting = false;
     do {
       const command = yield call(takeAsCommand, rkChan);
-      yield put({type: "FOO"});
       if (!command) continue;
 
       const shouldRun = yield call(runCommandSaga, command);
