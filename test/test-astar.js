@@ -1,7 +1,7 @@
 import iterOut, { distanceFrom } from "../client/util/a-star";
 
-const ORIGIN = { x:  10, y:  10 };
-const SIZE   = { x: 200, y: 200 };
+const ORIGIN = { x: 1, y: 1 };
+const SIZE   = { x: 5, y: 5 };
 
 const iter = iterOut(SIZE, ORIGIN);
 
@@ -13,6 +13,7 @@ let i = 0;
 while (++i) {
   if (i > 500000) break;
   const next = iter.next();
+  console.log(next.value);
   if (next.done) break;
 }
 const after = new Date();

@@ -50,6 +50,18 @@ export default function* ({ dx, dy }) {
         cameraTracking: true
       }
     });
+    yield put({
+      type: "NUDGE_VECTOR_FIELD",
+      payload: {
+        cutoff: 0.1,
+        intensity: 8,
+        point: {
+          x: x0+dx,
+          y: y0+dy,
+        }
+      }
+    });
+
     return true;
   }
 }

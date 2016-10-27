@@ -1,3 +1,3 @@
 
 require("./test-astar.js");
-require("./test-astar-no-yield.js");
+//require("./test-astar-no-yield.js");

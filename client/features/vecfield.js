@@ -4,6 +4,7 @@ import {
   allNeighbors,
   allNeighborsPolar
 } from "util/directions";
+import iterateOutward from "util/a-star";
 
 const getPointForIndex = (size, i) => {
   const x = i % size.x
@@ -38,6 +39,86 @@ export const createVectorField = (sx, sy) => ({
 
 export default (state = initialState, action) => {
   switch(action.type) {
+    case "RUN_CLOCK":
+      action = {
+        ...action,
+        payload: {
+          ...action.payload,
+          decayFactor: 0.75
+        }
+      };
+      // explicit fallthrough
+    case "DECAY_VECTOR_FIELD": {
+      const { decayFactor } = action.payload;
+      const { field } = state;
+      if (!field) return state;
+      const { rField } = field;
+      const nextRField = Float32Array.from(rField)
+
+      for (let i = 0; i < nextRField.length; i++) {
+        nextRField[i] = nextRField[i] * decayFactor;
+      }
+
+      return {
+        ...state,
+        field: {
+          ...state.field,
+          rField: nextRField
+        }
+      };
+    }
+    case "NUDGE_VECTOR_FIELD": {
+      const { cutoff, intensity, point: origin } = action.payload;
+      const { field } = state;
+      if (!field) return state;
+
+      const { size, thetaField, rField } = field;
+      const nextThetaField = Float32Array.from(thetaField);
+      const nextRField = Float32Array.from(rField);
+
+      const ix = getIndexForPoint.bind(this, size);
+      const iter = iterateOutward(size, origin);
+      iter.next(); // TODO: remove the need for this hack
+
+      let next = iter.next(); 
+      let first = true;
+
+      do {
+        const [x,y,r] = next.value;
+        const xVecToPoint = (origin.x - x);
+        const yVecToPoint = (origin.y - y);
+
+        const dTheta = Math.atan2(yVecToPoint, xVecToPoint); // Direction of vector change
+        const dR = intensity / (r**2); // Intensity of vector change
+        const dx = dR * Math.cos(dTheta);
+        const dy = dR * Math.sin(dTheta);
+
+        const th0 = thetaField[ix(x,y)]; // angle of vector at vecfield[x,y]
+        const r0 = rField[ix(x,y)];      // magnitude of vector at vecfield[x,y]
+        const x0 = r0 * Math.cos(th0);   // x-component of vector at vecfield[x,y]
+        const y0 = r0 * Math.sin(th0);   // y-component of vector at vecfield[x,y]
+        
+        const nextX = x0 - dx;
+        const nextY = y0 - dy;
+        const nextTheta = Math.atan2(nextY, nextX);
+        const nextR = Math.sqrt((nextX ** 2) + (nextY ** 2));
+
+        nextThetaField[ix(x,y)] = nextTheta;
+        nextRField[ix(x,y)] = nextR;
+
+        next = iter.next(dR < cutoff);
+        first = false;
+      } while (!next.done);
+
+      return {
+        ...state,
+        field: {
+          ...field,
+          thetaField: nextThetaField,
+          rField: nextRField
+        }
+      };
+    }
     case "OVERWRITE_VECTOR_FIELD": {
       const { point: { x: x0, y: y0 } } = action.payload;
       const { field } = state;

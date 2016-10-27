@@ -119,11 +119,18 @@ const renderVectorFieldAtTile = (context2d, state, tx, ty) => {
   const { x: tsx, y: tsy } = state.rendering.tileSizePx;
   const [px, py] = [tx * tsx, ty * tsy];
 
+  const { x: dx, y: dy } = getOffset(state);
+
   context2d.save();
-  context2d.translate(px + (tsx / 2), py + (tsy  / 2));
+  context2d.translate(px - (dx*tsx) + (tsx / 2), py - (dy*tsy) + (tsy  / 2));
   context2d.rotate(theta);
-  context2d.moveTo(-(r/2), 0);
-  context2d.lineTo( (r/2), 0);
+
+  const red = Math.round(255 - ((r / 100) * 255));
+  context2d.globalAlpha = 0.5;
+  context2d.fillStyle = `rgb(${r},0,0)`;
+
+  context2d.moveTo(-(r/2) * 3, 0);
+  context2d.lineTo( (r/2) * 3, 0);
   context2d.restore();
 };
 
@@ -160,9 +167,9 @@ export default class CanvasRenderer {
 
   render(state) {
     renderBackdrop(this._context2d, state);
-    //renderBackground(this._context2d, state);
-    //renderEntities(this._context2d, state);
-    //renderMessage(this._context2d, state);
+    renderBackground(this._context2d, state);
+    renderEntities(this._context2d, state);
+    renderMessage(this._context2d, state);
     renderVectorField(this._context2d, state);
   }
 }

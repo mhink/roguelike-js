@@ -29,9 +29,9 @@ export default function* () {
   yield put(batchRegisterTiles(player, playerTiledefs));
   yield put(batchRegisterTiles(floor, floorTiledefs));
   yield put(registerTile("apple", { x: 0, y: 2 }, food));
-  yield put(createMap("grass-night", 17, 17));
+  yield put(createMap("blank", 38, 38));
 
   yield put(spawnPlayer(8, 8));
-  yield put(spawnGoblin(1, 1));
-  yield put(spawnFood(10,2));
+  // yield put(spawnGoblin(1, 1));
+  // yield put(spawnFood(10,2));
 };

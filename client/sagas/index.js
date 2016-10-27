@@ -51,8 +51,16 @@ import {
 
 function* nudgeVecField(coords) {
   yield put({
-    type: "OVERWRITE_VECTOR_FIELD",
+    type: "DECAY_VECTOR_FIELD",
     payload: {
+      decayFactor: 0.5
+    }
+  });
+  yield put({
+    type: "NUDGE_VECTOR_FIELD",
+    payload: {
+      cutoff: 0.05,
+      intensity: 5,
       point: coords
     }
   });
@@ -62,7 +70,7 @@ export default function* rootSaga(canvas) {
   const ipcChan = yield ipcChannel("ipc-saga");
   const mouseChan = yield mouseChannel(canvas);
 
-  // yield* initializeGame();
+  yield* initializeGame();
   yield [
     fork(coreLoop),
     fork(takeEveryIpc, ipcChan, logIpc),

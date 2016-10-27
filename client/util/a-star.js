@@ -3,8 +3,8 @@ import {
   allNeighbors as neighbors
 } from "./directions";
 
-const distanceFrom = ({ x: x0, y: y0 }) => (x, y) => (
-  Math.sqrt((x-x0)**2 + (y-y0)**2)
+export const distanceFrom = ({ x: x0, y: y0 }) => (pt) => (
+  Math.sqrt((pt[0]-x0)**2 + (pt[1]-y0)**2)
 );
 
 const pointHash = (x, y) => ((((x+y) * (x+y+1)) / 2) + y);
@@ -12,16 +12,11 @@ const pointHash = (x, y) => ((((x+y) * (x+y+1)) / 2) + y);
 const iterateOutward = function* (size, origin) {
   const { x: sx, y: sy } = size;
   const { x: x0, y: y0 } = origin;
-  const distance = distanceFrom(origin);
+  const r = distanceFrom(origin);
 
-  // This might be backwards.
-  const openSet = new Tinyqueue([], (a, b) => 
-    distance(a) - distance(b)
-  );
-
-  // keys of type { x, y }
+  const openSet   = new Tinyqueue([], (a, b) => r(a) - r(b));
   const closedSet = {};
-  const seenSet = {};
+  const seenSet   = {};
 
   openSet.push([x0, y0]);
   seenSet[pointHash(origin.x, origin.y)] = true;
@@ -31,7 +26,9 @@ const iterateOutward = function* (size, origin) {
     const cshash = pointHash(x, y);
 
     closedSet[cshash] = true;
-    yield [x, y, distance(x, y)];
+    const stopIteration = yield [x, y, r([x,y])];
+
+    if (stopIteration) break;
 
     for (const [dx,dy] of ALL_DIRECTIONS) {
       const nbx = x + dx;
