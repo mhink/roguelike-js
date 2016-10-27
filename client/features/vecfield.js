@@ -37,6 +37,12 @@ export const createVectorField = (sx, sy) => ({
   }
 });
 
+// decay functions
+const inverse = (r, c) => (c / r);
+const inverseSquare = (r, c) => (c / (r**2));
+const inverseThreeHalfs = (r, c) => (c / (r ** 3));
+const step = (r, rs) => (r < rs ? r : 0);
+
 export default (state = initialState, action) => {
   switch(action.type) {
     case "RUN_CLOCK":
@@ -89,7 +95,7 @@ export default (state = initialState, action) => {
         const yVecToPoint = (origin.y - y);
 
         const dTheta = Math.atan2(yVecToPoint, xVecToPoint); // Direction of vector change
-        const dR = intensity / (r**2); // Intensity of vector change
+        const dR = step(r, intensity);
         const dx = dR * Math.cos(dTheta);
         const dy = dR * Math.sin(dTheta);
 
