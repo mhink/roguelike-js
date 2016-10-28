@@ -34,14 +34,9 @@ import {
 } from "features/vecfield";
 
 const getNeighborForVector = (theta) => {
-  if (theta < 1 * (Math.PI / 4)) return [  1,  0];
-  if (theta < 2 * (Math.PI / 4)) return [  1,  1];
-  if (theta < 3 * (Math.PI / 4)) return [  0,  1];
-  if (theta < 4 * (Math.PI / 4)) return [ -1,  1];
-  if (theta < 5 * (Math.PI / 4)) return [ -1,  0];
-  if (theta < 6 * (Math.PI / 4)) return [ -1, -1];
-  if (theta < 7 * (Math.PI / 4)) return [  0, -1];
-  return [  1, -1];
+  const xh = Math.cos(theta);
+  const yh = Math.sin(theta);
+  return [Math.sign(xh), Math.sign(yh)];
 }
 
 export default function* (uuid) {

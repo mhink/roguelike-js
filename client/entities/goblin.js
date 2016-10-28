@@ -7,7 +7,7 @@ export default (x, y) => spawnEntity({
   },
   actor: {
     repeat:    true,
-    speed:     15,
+    speed:     8,
     eventType: "GOBLIN_AI"
   },
   combat: {

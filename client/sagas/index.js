@@ -16,17 +16,22 @@ import {
   takeEveryIpc 
 } from "ipc-saga-helpers";
 
+import { 
+  createVectorField,
+} from "features/vecfield";
+
 import runCommandSaga from "./run-command";
 import runEventSaga from "./run-events";
 import initializeGame from "./initialize-game";
 import logIpc from "./log-ipc";
-import { setScreenMessage } from "features/rendering";
+import { 
+  setScreenMessage,
+  getOffset
+} from "features/rendering";
 
-const coreLoop = function* (canvas) {
+const coreLoop = function* (rkChan) {
   const task = yield fork(function* () {
     console.log("starting core loop");
-    const rkChan = yield rawKeyboardChannel(canvas);
-
     let exiting = false;
     do {
       const command = yield call(takeAsCommand, rkChan);
@@ -44,11 +49,8 @@ const coreLoop = function* (canvas) {
   return task;
 }
 
-import { 
-  createVectorField,
-} from "features/vecfield";
-
 function* nudgeVecField(coords) {
+  const { x:dx, y:dy } = yield select(getOffset);
   yield put({
     type: "DECAY_VECTOR_FIELD",
     payload: {
@@ -60,18 +62,22 @@ function* nudgeVecField(coords) {
     payload: {
       cutoff: 0.05,
       intensity: 5,
-      point: coords
+      point: {
+        x: coords.x+dx, 
+        y: coords.y+dy,
+      }
     }
   });
 }
 
 export default function* rootSaga(canvas) {
+  const rkChan = yield rawKeyboardChannel(canvas);
   const ipcChan = yield ipcChannel("ipc-saga");
   const mouseChan = yield mouseChannel(canvas);
 
   yield* initializeGame();
   yield [
-    fork(coreLoop),
+    fork(coreLoop, rkChan),
     fork(takeEveryIpc, ipcChan, logIpc),
     fork(takeEveryMouse, mouseChan, nudgeVecField),
   ];

@@ -39,9 +39,10 @@ export const createVectorField = (sx, sy) => ({
 
 // decay functions
 const inverse = (r, c) => (c / r);
-const inverseSquare = (r, c) => (c / (r**2));
 const inverseCube = (r, c) => (c / (r ** 3));
 const step = (r, rs) => (r < rs ? r : 0);
+
+const inverseSquare = (r, c, d) => ((r * c + d) ** -2);
 
 export default (state = initialState, action) => {
   switch(action.type) {
@@ -91,7 +92,7 @@ export default (state = initialState, action) => {
         const yVecToPoint = (y - origin.y);
 
         const dTheta = Math.atan2(yVecToPoint, xVecToPoint); // Direction of vector change
-        const dR = inverseCube(r, intensity);
+        const dR = inverseSquare(r, 0.1, 0.25);
         const dx = dR * Math.cos(dTheta);
         const dy = dR * Math.sin(dTheta);
 
@@ -132,7 +133,6 @@ export default (state = initialState, action) => {
 
       const ix = getIndexForPoint.bind(this, size);
       for(const {x, y, theta, r} of allNeighborsPolar({x: x0, y: y0}, size)) {
-        console.log(x, y, theta, r);
         nextThetaField[ix(x, y)] = theta;
         nextRField[ix(x, y)] = 5 / (r ** 2);
       }
