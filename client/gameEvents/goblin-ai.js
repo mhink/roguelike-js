@@ -54,8 +54,6 @@ export default function* (uuid) {
     dy = rand_vec.dy
   }
 
-  console.log(dx, dy);
-
   const uuidAtPosition = yield select(getEntityAtPosition, x+dx, y+dy, mapUuid);
   if (uuidAtPosition) {
     const canFight = yield select(getCombatDetailsForEntity, uuidAtPosition);

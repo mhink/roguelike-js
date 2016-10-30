@@ -14,43 +14,34 @@ const initialState = {
   registry:   {}
 };
 
+const ACTION_HANDLERS = {
+  "CREATE_MAP": (state, { uuid, background, dimensions }) => ({
+    ...state,
+    currentMap: (state.currentMap || uuid),
+    maps: {
+      ...state.maps,
+      [uuid]: { background, dimensions }
+    }
+  }),
+  "MOVE_ENTITY": (state, { uuid, dx, dy }) => {
+    if(!state.registry[uuid]) return state;
+
+    const entity = state.registry[uuid];
+    
+    return updateEntity(state, uuid, {
+      x: entity.x + dx,
+      y: entity.y + dy
+    });
+  },
+  "SPAWN_ENTITY": (state, { uuid, position }) => (
+    position.mapUuid
+      ? state
+      : updateEntity(state, uuid, { mapUuid: state.currentMap })
+  ),
+};
+
 /* eslint complexity: ["warn"] max-statements: ["warn"] */
 export default entityReducer("position", (state = initialState, action) => {
-  switch (action.type) {
-    case "CREATE_MAP": {
-      const { uuid, background, dimensions } = action.payload;
-      return {
-        ...state,
-        currentMap: state.currentMap || uuid,
-        maps:       {
-          ...state.maps,
-          [uuid]: {
-            background, dimensions
-          }
-        }
-      };
-    }
-    case "MOVE_ENTITY": {
-      const { uuid, dx, dy } = action.payload;
-      const entity = state.registry[uuid];
-      if (entity) {
-        const { x: x0, y: y0 } = entity;
-        return updateEntity(state, uuid, {
-          x: x0 + dx,
-          y: y0 + dy
-        });
-      } else {
-        return state;
-      }
-    }
-    case "SPAWN_ENTITY": {
-      const { uuid, position } = action.payload;
-      return (position.mapUuid
-        ? state
-        : updateEntity(state, uuid, { mapUuid: state.currentMap }));
-    }
-    default: {
-      return state;
-    }
-  }
+  const handler = ACTION_HANDLERS[action.type];
+  return handler ? handler(state, action.payload) : state;
 });
