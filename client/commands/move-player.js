@@ -20,7 +20,7 @@ export default function* ({ dx, dy }) {
   const { x: x0, y: y0 } = yield select(getPositionForEntity, uuid);
   const canMove = yield select(entityCanMoveTo, uuid, { dx, dy });
   const mapUuid = yield select(getCurrentMap);
-  const uuidAtPosition = yield select(getEntityAtPosition, x0 + dx, y0 + dy, mapUuid);
+  const uuidAtPosition = yield select(getEntityAtPosition, mapUuid, {x: x0+dx, y: y0+dy});
 
   if (uuidAtPosition) {
     yield put({

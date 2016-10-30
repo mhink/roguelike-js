@@ -2,19 +2,31 @@ import { toPairs, findKey, map, filter } from "lodash";
 
 export const entityCanMoveTo = (state, uuid, { dx, dy }) => {
   const { mapUuid, x: x0, y: y0 } = state.maps.registry[uuid];
-  const { walls, size: { x: sx, y: sy } } = state.maps.maps[mapUuid];
   const [x, y] = [x0 + dx, y0 + dy];
-  const i = (y*sx) + (x%sx);
+  return positionIsClear(state, mapUuid, {x, y});
+};
 
-  if (walls[i] > 0) {
+export const positionIsClear = (state, mapUuid, pos) => {
+  if (!isPositionInBounds(state, mapUuid, pos)) {
     return false;
-  } else if (x < 0 || x >= sx || y < 0 || y >= sy) {
+  } else if (getWallAtPosition(state, mapUuid, pos) > 0) {
     return false;
-  } else if (getEntityAtPosition(state, x, y, mapUuid)) {
+  } else if (getEntityAtPosition(state, mapUuid, pos)) {
     return false;
   } else { 
     return true;
   }
+};
+
+export const isPositionInBounds = (state, mapUuid, {x,y}) => {
+  const { size: { x: sx, y: sy }} = state.maps.maps[mapUuid];
+  return !(x < 0 || x >= sx || y < 0 || y >= sy);
+};
+
+export const getWallAtPosition = (state, mapUuid, {x,y}) => {
+  const { walls, size: {x:sx,y:sy}} = state.maps.maps[mapUuid];
+  const i = (y*sx) + (x%sx);
+  return walls[i];
 };
 
 export const getCurrentMap = (state) => state.maps.currentMap;
@@ -36,7 +48,7 @@ export const getPositionForEntity = (state, uuid) => state.maps.registry[uuid];
 //       the entity at that position.
 //
 //       When _that_ gets too expensive, represent entities using a quadtree.
-export const getEntityAtPosition = (state, x, y, mapUuid) => (
+export const getEntityAtPosition = (state, mapUuid, {x, y}) => (
   findKey(state.maps.registry, (pos, uuid) => (
         pos.mapUuid === mapUuid
     &&  pos.x === x
