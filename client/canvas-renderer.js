@@ -136,6 +136,6 @@ export default class CanvasRenderer {
     renderBackground(this._context2d, state);
     renderEntities(this._context2d, state);
     renderMessage(this._context2d, state);
-    renderVectorField(this._context2d, state);
+    //renderVectorField(this._context2d, state);
   }
 }

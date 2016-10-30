@@ -31,7 +31,6 @@ import {
 
 const coreLoop = function* (rkChan) {
   const task = yield fork(function* () {
-    console.log("starting core loop");
     let exiting = false;
     do {
       const command = yield call(takeAsCommand, rkChan);
