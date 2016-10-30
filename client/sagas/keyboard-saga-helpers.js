@@ -21,18 +21,12 @@ const subscribeToKeyboard = (emitter) => {
 export const rawKeyboardChannel = () => eventChannel(subscribeToKeyboard);
 
 export const takeAsCommand = function* (rawKeyboardChannel) {
-  try {
-    const { keyboardEvent } = yield take(rawKeyboardChannel);
-    const command = yield select(commandForKeySelector, keyboardEvent.code);
-    if (command) {
-      return command;
-    } else {
-      console.warn(`No command is mapped to ${keyboardEvent.code}!`);
-      return;
-    }
-  } finally {
-    if (yield cancelled()) {
-      rawKeyboardChannel.close();
-    }
+  const { keyboardEvent } = yield take(rawKeyboardChannel);
+  const command = yield select(commandForKeySelector, keyboardEvent.code);
+  if (command) {
+    return command;
+  } else {
+    console.warn(`No command is mapped to ${keyboardEvent.code}!`);
+    return;
   }
 };

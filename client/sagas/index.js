@@ -1,5 +1,5 @@
 /* eslint-disable no-magic-numbers */
-import { put, fork, call, select } from "redux-saga/effects";
+import { put, fork, call, select, race } from "redux-saga/effects";
 
 import { 
   rawKeyboardChannel, 
@@ -7,8 +7,8 @@ import {
 } from "keyboard-saga-helpers";
 
 import {
-  mouseChannel,
-  takeEveryMouse
+  rawMouseChannel,
+  takeAsTileClick
 } from "mouse-saga-helpers";
 
 import { 
@@ -29,14 +29,23 @@ import {
   getOffset
 } from "features/rendering";
 
-const coreLoop = function* (rkChan) {
+const coreLoop = function* (kbChan, mouseChan) {
   const task = yield fork(function* () {
     let exiting = false;
     do {
-      const command = yield call(takeAsCommand, rkChan);
-      if (!command) continue;
+      const { keyboardCommand, mouseCommand } = yield race({
+        keyboardCommand: call(takeAsCommand, kbChan),
+        mouseCommand:    call(takeAsTileClick, mouseChan)
+      });
 
-      const shouldRun = yield call(runCommandSaga, command);
+      if (mouseCommand) {
+        console.log(`Heard a click on tile ${mouseCommand}`);
+        continue;
+      }
+
+      if (!keyboardCommand) continue;
+
+      const shouldRun = yield call(runCommandSaga, keyboardCommand);
       if (!shouldRun) continue;
 
       exiting = yield call(runEventSaga);
@@ -48,37 +57,15 @@ const coreLoop = function* (rkChan) {
   return task;
 }
 
-function* nudgeVecField(coords) {
-  const { x:dx, y:dy } = yield select(getOffset);
-  yield put({
-    type: "DECAY_VECTOR_FIELD",
-    payload: {
-      decayFactor: 0.5
-    }
-  });
-  yield put({
-    type: "NUDGE_VECTOR_FIELD",
-    payload: {
-      cutoff: 0.05,
-      intensity: 5,
-      point: {
-        x: coords.x+dx, 
-        y: coords.y+dy,
-      }
-    }
-  });
-}
-
 export default function* rootSaga(canvas) {
-  const rkChan = yield rawKeyboardChannel(canvas);
+  const kbChan = yield rawKeyboardChannel(canvas);
+  const mouseChan = yield rawMouseChannel(canvas);
   const ipcChan = yield ipcChannel("ipc-saga");
-  const mouseChan = yield mouseChannel(canvas);
 
   yield* initializeGame();
   yield [
-    fork(coreLoop, rkChan),
+    fork(coreLoop, kbChan, mouseChan),
     fork(takeEveryIpc, ipcChan, logIpc),
-    fork(takeEveryMouse, mouseChan, nudgeVecField),
   ];
 
   yield put({ type: "START_RENDERING" });
