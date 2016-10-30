@@ -122,29 +122,6 @@ export default (state = initialState, action) => {
         }
       };
     }
-    case "OVERWRITE_VECTOR_FIELD": {
-      const { point: { x: x0, y: y0 } } = action.payload;
-      const { field } = state;
-      if (!field) return state;
-
-      const { size, thetaField, rField } = field;
-      const nextThetaField = Float32Array.from(thetaField);
-      const nextRField = Float32Array.from(rField);
-
-      const ix = getIndexForPoint.bind(this, size);
-      for(const {x, y, theta, r} of allNeighborsPolar({x: x0, y: y0}, size)) {
-        nextThetaField[ix(x, y)] = theta;
-        nextRField[ix(x, y)] = 5 / (r ** 2);
-      }
-      return {
-        ...state,
-        field: {
-          ...field,
-          thetaField: nextThetaField,
-          rField: nextRField
-        }
-      };
-    }
     case "CREATE_VECTOR_FIELD": {
       const { size } = action.payload;
       const { x: sx, y: sy } = size;

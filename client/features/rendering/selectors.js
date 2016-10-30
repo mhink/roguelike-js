@@ -1,6 +1,6 @@
 export const backgroundTiles = function* (state: AppState) {
   const currentMapUuid = state.maps.currentMap;
-  const { walls, background, wallTile, size } = state.maps.maps[currentMapUuid];
+  const { walls, tiles, size } = state.maps.maps[currentMapUuid];
   const { x: ssx, y: ssy } = state.rendering.screenSize;
   const { x: sx, y: sy } = size;
   const { x: dx, y: dy } = state.rendering.offset;
@@ -15,9 +15,9 @@ export const backgroundTiles = function* (state: AppState) {
       const i = ((y+dy) * sx + (x+dx) % sx);
 
       if(walls[i] > 0) {
-        yield { x, y, tileName: wallTile};
+        yield { x, y, tileName: tiles.wall };
       } else {
-        yield { x, y, tileName: background };
+        yield { x, y, tileName: tiles.background };
       }
     }
   }

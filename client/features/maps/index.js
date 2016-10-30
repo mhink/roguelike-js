@@ -15,14 +15,17 @@ const initialState = {
 };
 
 const ACTION_HANDLERS = {
-  "CREATE_MAP": (state, { uuid, background, wallTile, size, walls }) => ({
-    ...state,
-    currentMap: (state.currentMap || uuid),
-    maps: {
-      ...state.maps,
-      [uuid]: { background, size, wallTile, walls }
-    }
-  }),
+  "CREATE_MAP": (state, { uuid, tiles, size }) => {
+    const walls = new Uint8Array(size.x*size.y);
+    return {
+      ...state,
+      currentMap: (state.currentMap || uuid),
+      maps: {
+        ...state.maps,
+        [uuid]: { tiles, size, walls }
+      }
+    };
+  },
   "TOGGLE_WALL": (state, { point }) => {
     const { x, y } = point;
     const { currentMap: mapUuid } = state;

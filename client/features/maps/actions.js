@@ -9,18 +9,20 @@ export const toggleWall = (x, y) => {
   };
 };
 
-export const createMap = (background, x, y, wallTile) => {
-  const walls = new Uint8Array(x*y);
-  return {
-    type:    "CREATE_MAP",
-    payload: {
-      uuid:       uuid(),
-      background,
-      wallTile,
-      size: {
-        x, y
-      },
-      walls
-    }
-  };
+const defaultTiles = {
+  background: "blank",
+  wall: "wall"
+};
+
+const defaultSize = {
+  x: 4,
+  y: 4
+};
+
+export const createMap = ({tiles = defaultTiles, size = defaultSize}) => {
+  return { type: "CREATE_MAP", payload: {
+    uuid: uuid(),
+    size,
+    tiles,
+  }};
 };

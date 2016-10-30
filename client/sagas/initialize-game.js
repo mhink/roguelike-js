@@ -16,9 +16,18 @@ export default function* () {
 
   yield put(registerTile("apple", { x: 0, y: 2 }, food.path));
   yield put(registerTile("wall", { x: 1, y: 4 }, wall.path));
-  yield put(createMap("blank", 32, 32, "wall"));
+  yield put(createMap({
+    tiles: {
+      background: "blank",
+      wall: "wall"
+    },
+    size: {
+      x: 5,
+      y: 5
+    }
+  }));
 
-  yield put(spawnPlayer(16, 16));
+  yield put(spawnPlayer(0, 0));
   //yield put(spawnGoblin(1, 1));
   // yield put(spawnFood(10,2));
 };

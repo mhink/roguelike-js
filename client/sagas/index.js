@@ -71,5 +71,4 @@ export default function* rootSaga(canvas) {
   ];
 
   yield put({ type: "START_RENDERING" });
-  yield put(createVectorField(38, 38));
 }
