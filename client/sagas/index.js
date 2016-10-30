@@ -33,19 +33,21 @@ const coreLoop = function* (kbChan, mouseChan) {
   const task = yield fork(function* () {
     let exiting = false;
     do {
-      const { keyboardCommand, mouseCommand } = yield race({
-        keyboardCommand: call(takeAsCommand, kbChan),
-        mouseCommand:    call(takeAsTileClick, mouseChan)
+      let { keyboard: command, mouse: coords } = yield race({
+        keyboard: call(takeAsCommand, kbChan),
+        mouse:    call(takeAsTileClick, mouseChan)
       });
 
-      if (mouseCommand) {
-        console.log(`Heard a click on tile ${mouseCommand}`);
-        continue;
+      if (coords) {
+        command = {
+          command: "TOGGLE_WALL",
+          payload: {...coords}
+        };
       }
 
-      if (!keyboardCommand) continue;
+      if (!command) continue;
 
-      const shouldRun = yield call(runCommandSaga, keyboardCommand);
+      const shouldRun = yield call(runCommandSaga, command);
       if (!shouldRun) continue;
 
       exiting = yield call(runEventSaga);

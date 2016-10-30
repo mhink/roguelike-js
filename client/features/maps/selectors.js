@@ -2,10 +2,13 @@ import { toPairs, findKey, map, filter } from "lodash";
 
 export const entityCanMoveTo = (state, uuid, { dx, dy }) => {
   const { mapUuid, x: x0, y: y0 } = state.maps.registry[uuid];
-  const { dimensions: { x: sx, y: sy } } = state.maps.maps[mapUuid];
+  const { walls, size: { x: sx, y: sy } } = state.maps.maps[mapUuid];
   const [x, y] = [x0 + dx, y0 + dy];
+  const i = (y*sx) + (x%sx);
 
-  if (x < 0 || x >= sx || y < 0 || y >= sy) {
+  if (walls[i] > 0) {
+    return false;
+  } else if (x < 0 || x >= sx || y < 0 || y >= sy) {
     return false;
   } else if (getEntityAtPosition(state, x, y, mapUuid)) {
     return false;
@@ -18,7 +21,7 @@ export const getCurrentMap = (state) => state.maps.currentMap;
 export const getCurrentMapDimensions = (state) => getMapDimensions(state, state.maps.currentMap);
 export const getMapDimensions = (state, mapUuid) => {
   const map = state.maps.maps[mapUuid];
-  return (map && map.dimensions);
+  return (map && map.size);
 }
 
 export const getPlayerPosition = (state) => state.maps.registry[state.player.playerUuid];

@@ -14,10 +14,11 @@ export default function* () {
     call(loadAndRegisterImage, wall, { x: 16, y: 16 }),
   ];
 
-  yield put(registerTile("apple", { x: 0, y: 2 }, food.image));
-  yield put(createMap("blank", 38, 38));
+  yield put(registerTile("apple", { x: 0, y: 2 }, food.path));
+  yield put(registerTile("wall", { x: 1, y: 4 }, wall.path));
+  yield put(createMap("blank", 32, 32, "wall"));
 
-  yield put(spawnPlayer(8, 8));
-  yield put(spawnGoblin(1, 1));
+  yield put(spawnPlayer(16, 16));
+  //yield put(spawnGoblin(1, 1));
   // yield put(spawnFood(10,2));
 };

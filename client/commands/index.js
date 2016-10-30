@@ -6,6 +6,7 @@ import debugIpc from "./debug-ipc";
 import toggleCameraFreeze from "./toggle-camera-freeze";
 import spawnGoblin from "./spawn-goblin";
 import delay from "./delay";
+import toggleWall from "./toggle-wall";
 
 export default {
   "MOVE_CAMERA":          moveCamera,
@@ -16,4 +17,5 @@ export default {
   "TOGGLE_CAMERA_FREEZE": toggleCameraFreeze,
   "SPAWN_GOBLIN":         spawnGoblin, 
   "DELAY":                delay,
+  "TOGGLE_WALL":          toggleWall,
 };

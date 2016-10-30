@@ -15,14 +15,35 @@ const initialState = {
 };
 
 const ACTION_HANDLERS = {
-  "CREATE_MAP": (state, { uuid, background, dimensions }) => ({
+  "CREATE_MAP": (state, { uuid, background, wallTile, size, walls }) => ({
     ...state,
     currentMap: (state.currentMap || uuid),
     maps: {
       ...state.maps,
-      [uuid]: { background, dimensions }
+      [uuid]: { background, size, wallTile, walls }
     }
   }),
+  "TOGGLE_WALL": (state, { point }) => {
+    const { x, y } = point;
+    const { currentMap: mapUuid } = state;
+    if (!mapUuid) return state;
+
+    const { walls, size: { x: sx, y: sy } } = state.maps[mapUuid];
+    const i = (y*sx) + (x%sx);
+    const nextWalls = Uint8Array.from(walls);
+    nextWalls[i] = (walls[i] === 0 ? 1 : 0);
+
+    return {
+      ...state,
+      maps: {
+        ...state.maps,
+        [mapUuid]: {
+          ...state.maps[mapUuid],
+          walls: nextWalls
+        }
+      }
+    };
+  },
   "MOVE_ENTITY": (state, { uuid, dx, dy }) => {
     if(!state.registry[uuid]) return state;
 
