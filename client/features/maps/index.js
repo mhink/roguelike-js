@@ -1,4 +1,3 @@
-// @flow
 /* eslint max-len: [ "error", 105 ] no-shadow: ["error", { "allow": ["uuid"]}]*/
 
 import entityReducer, {
