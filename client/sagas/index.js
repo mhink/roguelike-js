@@ -4,17 +4,17 @@ import { put, fork, call, select, race } from "redux-saga/effects";
 import { 
   rawKeyboardChannel, 
   takeAsCommand
-} from "keyboard-saga-helpers";
+} from "./keyboard-saga-helpers";
 
 import {
   rawMouseChannel,
   takeAsTileClick
-} from "mouse-saga-helpers";
+} from "./mouse-saga-helpers";
 
 import { 
   ipcChannel, 
   takeEveryIpc 
-} from "ipc-saga-helpers";
+} from "./ipc-saga-helpers";
 
 import { 
   createVectorField,

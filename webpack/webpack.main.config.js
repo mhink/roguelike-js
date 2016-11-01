@@ -2,11 +2,6 @@
 const path = require('path');
 const webpack = require('webpack');
 
-const paths = {
-  source: path.resolve('main'),
-  output: path.resolve('dist'),
-};
-
 const indexUrl = () => {
   if(process.env.NODE_ENV === 'development') {
     return "http://0.0.0.0:8080/";
@@ -14,30 +9,31 @@ const indexUrl = () => {
 }
 
 module.exports = {
-  target: 'electron-main',
+  target: 'electron',
 
-  context: paths.source,
-  entry: [
-    'babel-polyfill',
-    'index.js',
-  ],
+  context: path.resolve(__dirname, "..", "main"),
+  entry: 'index.js',
   output: {
-    path: paths.output,
+    path: path.resolve(__dirname, "..", "dist"),
     filename: 'main.js',
   },
   resolve: {
-    extensions: ['', '.js'],
-    modulesDirectories: ['main', 'node_modules'],
+    extensions: ['.js'],
+    modules: [
+      path.resolve(__dirname, "..", "main"),
+      'node_modules'
+    ],
   },
   module: {
-    loaders: [
+    rules: [
       {
         test: /\.js$/,
         exclude: /node_modules/,
-        loader: 'babel',
-      }, {
+        loader: 'babel-loader',
+      },
+      {
         test: /\.json$/,
-        loaders: ['json'],
+        loader: 'json-loader',
       },
     ],
   },
@@ -45,7 +41,6 @@ module.exports = {
     __dirname: false,
     __filename: false,
   },
-  devtool: (process.env.NODE_ENV === 'production' ? null : 'source-map'),
   externals: {
     '7zip': 'commonjs 7zip'
   },
