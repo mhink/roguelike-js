@@ -5,7 +5,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 module.exports = {
   target: 'electron',
   devtool: 'source-map',
-  entry: "index.js",
+  entry: "main.js",
   devServer: {
     historyApiFallback: true,
     stats: 'error-only',
