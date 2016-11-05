@@ -4,7 +4,8 @@ import {
   allNeighbors,
   allNeighborsPolar
 } from "util/directions";
-import iterateOutward from "util/a-star";
+
+import iterateOutward from "util/iterate-outward";
 
 const getPointForIndex = (size, i) => {
   const x = i % size.x

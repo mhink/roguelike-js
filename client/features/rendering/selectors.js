@@ -1,3 +1,5 @@
+// TODO: this function does way too much. Most of this logic should live
+// in renderer/render-map.js
 export const backgroundTiles = function* (state: AppState) {
   const currentMapUuid = state.maps.currentMap;
   const { walls, tiles, size } = state.maps.maps[currentMapUuid];
