@@ -1,5 +1,5 @@
 import configureStore from "store";
-import CanvasRenderer from "canvas-renderer";
+import CanvasRenderer from "renderer";
 
 require("siimple");
 require("./layout.css");
